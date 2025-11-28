@@ -3,7 +3,5 @@
     <string name="camara">Câmara</string>
     <string name="mapa">Mapa</string>
     <string name="colecoes">Coleções</string>
-    <string name="camara_fraguemento">CAMARA</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
