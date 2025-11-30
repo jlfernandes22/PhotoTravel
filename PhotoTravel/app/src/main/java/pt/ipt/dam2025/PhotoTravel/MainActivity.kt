@@ -25,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         val adapter = ViewPagerAdapter(this)
         viewPager.adapter = adapter
+        // Para desativar swipe do utilizador, é possível apenas para o mapa
+        // mas achamos que não faz sentido para a aplicação
+        viewPager.isUserInputEnabled = false
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
@@ -34,11 +37,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {
-                TODO("Not yet implemented")
+                // Não é necessário implementar
             }
 
             override fun onTabReselected(p0: TabLayout.Tab?) {
-                TODO("Not yet implemented")
+                // Não é necessário implementar
             }
 
         })

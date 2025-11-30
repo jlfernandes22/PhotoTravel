@@ -10,11 +10,9 @@ import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
+import org.maplibre.android.plugins.annotation.SymbolManager
+import org.maplibre.android.plugins.annotation.SymbolOptions
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -22,8 +20,9 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MapaFragmento : Fragment() {
-    // TODO: Rename and change types of parameters
 
+    // variável para os pins
+    private lateinit var pinManager: SymbolManager
     private lateinit var vistaMapa: MapView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,14 +31,13 @@ class MapaFragmento : Fragment() {
 
         }
 
-        MapLibre.getInstance(requireContext())
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        MapLibre.getInstance(requireContext())
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_mapa, container, false)
     }
@@ -54,13 +52,46 @@ class MapaFragmento : Fragment() {
 
         vistaMapa.onCreate(savedInstanceState)
 
-        vistaMapa.getMapAsync {
+        vistaMapa.getMapAsync { map ->
 
-            map -> map.setStyle("https://api.maptiler.com/maps/aquarelle/style.json?key=WFHHB4Zg3NcUnxvMy6uZ") {
+            val estiloURL = "https://api.maptiler.com/maps/aquarelle/style.json?key=WFHHB4Zg3NcUnxvMy6uZ"
+
+            map.setStyle(estiloURL) { estilo ->
+
+                //ativar pins
+                pinManager = SymbolManager(vistaMapa, map, estilo )
+
+                // desativar sobreposição
+                pinManager.iconAllowOverlap = false
+                pinManager.textAllowOverlap = false
+
+                //posição do pin
+                val parisLocal = LatLng(48.8566, 2.3522) // Paris coordinates
+                //criar pin
+                val pin = pinManager.create(
+                    SymbolOptions().
+                    withLatLng(parisLocal).
+                    //usar para colocar as imagens
+                    withIconImage("marker").
+                    withTextField("PARIS").
+                    withIconSize(0.5f)
+                )
+                //posição inicial do mapa
                 map.cameraPosition = CameraPosition.Builder().
                         target(LatLng(48.8566, 2.3522)).
                         zoom(10.0).
                         build()
+
+                //  testar toque no pin e mostrar mensagem
+                pinManager.addClickListener { pin ->
+                    // Show a message when clicked
+                    android.widget.Toast.makeText(
+                        requireContext(),
+                        "Clicked: ${pin.textField}",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                    true // true para "consumir" o toque
+                }
             }
 
         }

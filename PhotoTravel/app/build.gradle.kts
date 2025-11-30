@@ -38,8 +38,10 @@ android {
 }
 
 dependencies {
-    // Dependencia para usar MapLibre
-    implementation("org.maplibre.gl:android-sdk:12.2.0")
+    // Dependência para usar MapLibre
+    implementation(libs.android.sdk)
+    // Dependêcia para usar pins
+    implementation(libs.android.plugin.annotation.v9)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
