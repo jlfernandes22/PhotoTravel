@@ -12,6 +12,7 @@ import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
+import androidx.core.graphics.scale
 
 
 /**
@@ -61,9 +62,19 @@ class MapaFragmento : Fragment() {
                 //ativar pins
                 pinManager = SymbolManager(vistaMapa, map, estilo )
 
-                // desativar sobreposição
+                //desativar sobreposição
                 pinManager.iconAllowOverlap = false
                 pinManager.textAllowOverlap = false
+
+                //teste criação de pin com imagem
+                val imagemBitmap = android.graphics.BitmapFactory.decodeResource(resources,R.drawable.teste_imagem_mapa )
+                //variáveis para definir tamanho da imagem no ecrã
+                val width = 100
+                val height = 100
+                //reduzir a imagem para o tamanho definido anteriormente
+                val imagemBitmapReduzida = imagemBitmap.scale(width, height, false)
+
+                estilo.addImage("imagem_teste", imagemBitmapReduzida)
 
                 //posição do pin
                 val parisLocal = LatLng(48.8566, 2.3522) // Paris coordinates
@@ -73,7 +84,8 @@ class MapaFragmento : Fragment() {
                     withLatLng(parisLocal).
                     //usar para colocar as imagens
                     withIconImage("marker").
-                    withTextField("PARIS").
+                    withIconImage("imagem_teste"). //funciona mas fica muito grande, corrigido com .scale
+                    // withTextField("PARIS").
                     withIconSize(0.5f)
                 )
                 //posição inicial do mapa
@@ -83,6 +95,7 @@ class MapaFragmento : Fragment() {
                         build()
 
                 //  testar toque no pin e mostrar mensagem
+                /**
                 pinManager.addClickListener { pin ->
                     // Show a message when clicked
                     android.widget.Toast.makeText(
@@ -91,7 +104,7 @@ class MapaFragmento : Fragment() {
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                     true // true para "consumir" o toque
-                }
+                } **/
             }
 
         }
