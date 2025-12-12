@@ -1,12 +1,25 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+}
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { stream ->
+        localProperties.load(stream)
+    }
 }
 
 android {
     namespace = "pt.ipt.dam2025.phototravel"
     compileSdk {
         version = release(36)
+    }
+
+    buildFeatures{
+        buildConfig = true
     }
 
     defaultConfig {
@@ -20,7 +33,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_KEY", "${localProperties.getProperty("API_KEY")}")
+        }
         release {
+            buildConfigField("String", "API_KEY", "${localProperties.getProperty("API_KEY")}")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
