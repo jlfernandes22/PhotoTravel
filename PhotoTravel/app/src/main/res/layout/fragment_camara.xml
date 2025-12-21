@@ -15,13 +15,15 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Botão para tirar a foto -->
-    <Button
+    <ImageButton
         android:id="@+id/image_capture_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="50dp"
         android:elevation="2dp"
-        android:text="Tirar"
+        android:src="@drawable/imagem_cortada_circular"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
