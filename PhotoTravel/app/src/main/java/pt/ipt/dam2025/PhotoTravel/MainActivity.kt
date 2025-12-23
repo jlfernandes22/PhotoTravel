@@ -25,23 +25,25 @@ class MainActivity : AppCompatActivity() {
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         val adapter = ViewPagerAdapter(this)
         viewPager.adapter = adapter
-        // Para desativar swipe do utilizador, é possível apenas para o mapa
-        // mas achamos que não faz sentido para a aplicação
+        
+        // Desativa o swipe do utilizador
         viewPager.isUserInputEnabled = false
+        
+        // Evita que os fragmentos sejam destruídos ao mudar de tab, 
+        // o que ajuda na performance do Mapa e Câmara
+        viewPager.offscreenPageLimit = 2
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(janela: TabLayout.Tab?) {
-                viewPager.currentItem = janela!!.position
-
+                // Alterado para 'false' para evitar o glitch visual durante a animação de scroll
+                viewPager.setCurrentItem(janela!!.position, false)
             }
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {
-                // Não é necessário implementar
             }
 
             override fun onTabReselected(p0: TabLayout.Tab?) {
-                // Não é necessário implementar
             }
 
         })

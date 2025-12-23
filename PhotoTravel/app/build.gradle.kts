@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,14 +11,31 @@ android {
         version = release(36)
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "pt.ipt.dam2025.phototravel"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // 1. ficheiro local.properties
+        val localPropertiesFile = project.rootProject.file("local.properties")        // 2. Create the properties object using the fully qualified name
+        val properties = Properties()
+
+        // 3. carregar ficheiro
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { properties.load(it) }
+        }
+
+        // 4. obter chave API
+        val apiKey = properties.getProperty("API_KEY") ?: ""
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -50,7 +69,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
+    //para poder ler e transformar json
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("androidx.fragment:fragment-ktx:1.8.1")
     // Dependências da CameraX
     val camerax_version = "1.3.1"
     implementation("androidx.camera:camera-core:${camerax_version}")

@@ -1,10 +1,15 @@
 package pt.ipt.dam2025.phototravel.fragmentos
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import pt.ipt.dam2025.phototravel.R
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
@@ -13,6 +18,16 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
 import androidx.core.graphics.scale
+import com.google.gson.internal.bind.TypeAdapters.URI
+import pt.ipt.dam2025.phototravel.BuildConfig.API_KEY
+import androidx.core.net.toUri
+import pt.ipt.dam2025.PhotoTravel.PartilhaDadosViewModel
+import kotlin.properties.ReadOnlyProperty
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.snapshotter.MapSnapshotter
+import androidx.core.graphics.createBitmap
 
 
 /**
@@ -22,9 +37,14 @@ import androidx.core.graphics.scale
  */
 class MapaFragmento : Fragment() {
 
+
+    private val viewModel: PartilhaDadosViewModel by activityViewModels()
+
+
     // variável para os pins
     private lateinit var pinManager: SymbolManager
     private lateinit var vistaMapa: MapView
+    private lateinit var mapLibreMap: MapLibreMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,64 +70,71 @@ class MapaFragmento : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         vistaMapa = view.findViewById<MapView>(R.id.mapa)
-
         vistaMapa.onCreate(savedInstanceState)
 
         vistaMapa.getMapAsync { map ->
-
-            val estiloURL = "https://api.maptiler.com/maps/aquarelle/style.json?key=WFHHB4Zg3NcUnxvMy6uZ"
+            this.mapLibreMap = map
+            val estiloURL = "https://api.maptiler.com/maps/streets/style.json?key=$API_KEY"
 
             map.setStyle(estiloURL) { estilo ->
 
                 //ativar pins
                 pinManager = SymbolManager(vistaMapa, map, estilo )
 
-                //desativar sobreposição
-                pinManager.iconAllowOverlap = false
-                pinManager.textAllowOverlap = false
+                pinManager.iconAllowOverlap = true
+                pinManager.textAllowOverlap = true
 
-                //teste criação de pin com imagem
-                val imagemBitmap = android.graphics.BitmapFactory.decodeResource(resources,R.drawable.teste_imagem_mapa )
-                //variáveis para definir tamanho da imagem no ecrã
-                val width = 100
-                val height = 100
-                //reduzir a imagem para o tamanho definido anteriormente
-                val imagemBitmapReduzida = imagemBitmap.scale(width, height, false)
 
-                estilo.addImage("imagem_teste", imagemBitmapReduzida)
+                viewModel.listaFotos.observe(viewLifecycleOwner, Observer { listaDeFotos ->
 
-                //posição do pin
-                val parisLocal = LatLng(48.8566, 2.3522) // Paris coordinates
-                //criar pin
-                val pin = pinManager.create(
-                    SymbolOptions().
-                    withLatLng(parisLocal).
-                    //usar para colocar as imagens
-                    withIconImage("marker").
-                    withIconImage("imagem_teste"). //funciona mas fica muito grande, corrigido com .scale
-                    // withTextField("PARIS").
-                    withIconSize(0.5f)
-                )
-                //posição inicial do mapa
-                map.cameraPosition = CameraPosition.Builder().
-                        target(LatLng(48.8566, 2.3522)).
-                        zoom(10.0).
-                        build()
+                    pinManager.deleteAll()
 
-                //  testar toque no pin e mostrar mensagem
-                /**
-                pinManager.addClickListener { pin ->
-                    // Show a message when clicked
-                    android.widget.Toast.makeText(
-                        requireContext(),
-                        "Clicked: ${pin.textField}",
-                        android.widget.Toast.LENGTH_SHORT
-                    ).show()
-                    true // true para "consumir" o toque
-                } **/
+                    for (foto in listaDeFotos) {
+
+                        val bitmapIcone: Bitmap? = carregarFotos(requireContext(), foto.uriString)
+
+                        if(bitmapIcone != null) {
+                            val idImagem: String = "img_${foto.titulo}"
+                            estilo.addImage(idImagem, bitmapIcone)
+
+                            pinManager.create(
+                                SymbolOptions()
+                                    .withLatLng(LatLng(foto.longitude,foto.latitude))
+                                    .withIconImage(idImagem)
+                                    .withIconSize(0.5f)
+                            )
+
+                        }
+                    }
+                })
+
             }
 
         }
+    }
+
+    /**
+     * Função para carregar foto do dispositivo
+     */
+    fun carregarFotos(context: android.content.Context, uriString: String): Bitmap? {
+
+        try{
+            val uri = uriString.toUri()
+            val contentResolver = context.contentResolver
+
+
+            //carregar a imagem original
+            val localizacao = ImageDecoder.createSource(contentResolver, uri)
+            val bitmapOriginal = ImageDecoder.decodeBitmap(localizacao)
+
+            return bitmapOriginal.scale(150, 150, false)
+
+        }catch (e: Exception){
+            val msg = "Erro ao carregar imagem do dispositivo "
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+
+        }
+        return null
     }
 
 
@@ -161,29 +188,4 @@ class MapaFragmento : Fragment() {
         vistaMapa.onSaveInstanceState(outState)
     }
 
-
-
-
-/**
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MapaFraguemento.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MapaFraguemento().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
-
-    **/
 }
