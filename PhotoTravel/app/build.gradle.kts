@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "pt.ipt.dam2025.travelphoto"
+    namespace = "pt.ipt.dam2025.phototravel"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "pt.ipt.dam2025.travelphoto"
+        applicationId = "pt.ipt.dam2025.phototravel"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -38,6 +38,10 @@ android {
 }
 
 dependencies {
+    // Dependência para usar MapLibre
+    implementation(libs.android.sdk)
+    // Dependêcia para usar pins
+    implementation(libs.android.plugin.annotation.v9)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -46,4 +50,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Dependências da CameraX
+    val camerax_version = "1.3.1"
+    implementation("androidx.camera:camera-core:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+
+
 }
