@@ -30,8 +30,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import pt.ipt.dam2025.PhotoTravel.FotoDados
-import pt.ipt.dam2025.PhotoTravel.PartilhaDadosViewModel
+import pt.ipt.dam2025.phototravel.FotoDados
+import pt.ipt.dam2025.phototravel.PartilhaDadosViewModel
 import pt.ipt.dam2025.phototravel.R
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -140,6 +140,9 @@ class CamaraFragmento : Fragment() {
         val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US)
             .format(System.currentTimeMillis())
 
+        val dataDia = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+            .format(System.currentTimeMillis())
+
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
@@ -183,7 +186,7 @@ class CamaraFragmento : Fragment() {
                                 val novaFoto = FotoDados(
                                     uriString = uri.toString(),
                                     titulo = name,
-                                    data = name,
+                                    data = dataDia,
                                     latitude = location?.latitude ?: 0.0,
                                     longitude = location?.longitude ?: 0.0
                                 )

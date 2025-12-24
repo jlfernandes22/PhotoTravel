@@ -1,4 +1,4 @@
-package pt.ipt.dam2025.PhotoTravel
+package pt.ipt.dam2025.phototravel
 
 import android.app.Application
 import android.content.Context
@@ -15,7 +15,7 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
     val listaFotos: LiveData<MutableList<FotoDados>> get() = _listaFotos
 
     private val gson = Gson()
-    private val sharedPrefs = application.getSharedPreferences("TrabelPhoto", Context.MODE_PRIVATE)
+    private val sharedPrefs = application.getSharedPreferences("TravelPhoto", Context.MODE_PRIVATE)
 
     init {
         carregarDadosDoDisco()

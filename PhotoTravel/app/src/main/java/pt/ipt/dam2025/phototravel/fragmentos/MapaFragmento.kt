@@ -1,9 +1,7 @@
 package pt.ipt.dam2025.phototravel.fragmentos
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,21 +11,16 @@ import android.widget.Toast
 import pt.ipt.dam2025.phototravel.R
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
-import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
 import androidx.core.graphics.scale
-import com.google.gson.internal.bind.TypeAdapters.URI
 import pt.ipt.dam2025.phototravel.BuildConfig.API_KEY
 import androidx.core.net.toUri
-import pt.ipt.dam2025.PhotoTravel.PartilhaDadosViewModel
-import kotlin.properties.ReadOnlyProperty
+import pt.ipt.dam2025.phototravel.PartilhaDadosViewModel
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import org.maplibre.android.maps.MapLibreMap
-import org.maplibre.android.snapshotter.MapSnapshotter
-import androidx.core.graphics.createBitmap
 
 
 /**
