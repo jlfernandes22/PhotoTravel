@@ -5,6 +5,7 @@ package pt.ipt.dam2025.phototravel.modelos
  */
 data class ColecaoDados(
     val titulo: String,       // Vai ser a data (ex: "23/12/2025")
+    var nomePersonalizado: String? = null, // <--- CAMPO ADICIONADO
     val capaUri: String,      // A foto de capa (usamos a primeira foto do dia)
     val listaFotos: List<FotoDados> // Guardamos a lista original caso queiramos abrir depois
 )
