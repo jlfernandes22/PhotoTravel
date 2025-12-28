@@ -3,6 +3,13 @@
     <item
         android:id="@+id/menu_renomear"
         android:title="Renomear Coleção" />
-    <!-- No futuro, pode adicionar mais opções aqui -->
-    <!-- <item android:id="@+id/menu_apagar" android:title="Apagar" /> -->
+
+    <item
+        android:id="@+id/menu_renomear_localizacao"
+        android:title="Renomear com a localização aproximada" />
+
+
+    <item
+        android:id="@+id/menu_apagar"
+        android:title="Apagar Coleção" />
 </menu>

@@ -98,4 +98,19 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
         // Força a recriação da lista de coleções para que a UI seja atualizada imediatamente
         agruparFotosEmColecoes(_listaFotos.value)
     }
+    fun apagarColecao(colecaoParaApagar: ColecaoDados) {
+        val listaAtual = _listaFotos.value ?: return
+
+        // Remove todas as fotos cuja data corresponde à data da coleção a ser apagada
+        listaAtual.removeAll { it.data == colecaoParaApagar.titulo }
+
+        // Remove também o nome personalizado associado, se existir
+        prefsNomes.edit { remove(colecaoParaApagar.titulo) }
+
+        // Atualiza o LiveData, o que fará com que o observeForever dispare o reagrupamento
+        _listaFotos.value = listaAtual
+
+        // Guarda a lista de fotos atualizada no disco
+        guardarDadosNoDisco(listaAtual)
+    }
 }

@@ -1,22 +1,18 @@
 package pt.ipt.dam2025.phototravel
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.lifecycle.Observer
 import pt.ipt.dam2025.phototravel.adaptadores.FotosAdapter
-import pt.ipt.dam2025.phototravel.viewmodel.PartilhaDadosViewModel
+import pt.ipt.dam2025.phototravel.modelos.FotoDados
 
 class DetalheColecaoActivity : AppCompatActivity() {
-
-    // Criamos uma nova instância do ViewModel para ler os dados do disco
-    private val viewModel: PartilhaDadosViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,20 +25,23 @@ class DetalheColecaoActivity : AppCompatActivity() {
             insets
         }
 
-        // 1. Receber a DATA que veio do clique
-        val dataRecebida = intent.getStringExtra("CHAVE_DATA") ?: ""
+        // 1. Receber o nome e a lista de fotos do Intent
+        val nomeDaColecao = intent.getStringExtra("NOME_COLECAO") ?: "Detalhes"
+        val fotosDoAlbum: ArrayList<FotoDados>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayListExtra("LISTA_FOTOS", FotoDados::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableArrayListExtra("LISTA_FOTOS")
+        }
 
-        findViewById<TextView>(R.id.txtTituloAlbum).text = "Fotos de $dataRecebida"
+        findViewById<TextView>(R.id.txtTituloAlbum).text = nomeDaColecao
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerFotosAlbum)
         recycler.layoutManager = GridLayoutManager(this, 3)
 
-        // 2. Observar os dados e filtrar apenas as fotos desta data
-        viewModel.listaFotos.observe(this, Observer { todasAsFotos ->
-            if (todasAsFotos != null) {
-                val fotosDesteAlbum = todasAsFotos.filter { it.data == dataRecebida }
-                recycler.adapter = FotosAdapter(fotosDesteAlbum)
-            }
-        })
+        // 2. Se a lista de fotos não for nula, configura o adapter
+        if (fotosDoAlbum != null) {
+            recycler.adapter = FotosAdapter(fotosDoAlbum)
+        }
     }
 }

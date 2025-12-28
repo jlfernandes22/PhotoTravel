@@ -51,14 +51,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- CORREÇÃO: Adicionar um fundo transparente com efeito de clique -->
         <ImageButton
             android:id="@+id/opcoes_colecao_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Opções da coleção"
             android:src="@drawable/menu_colecoes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
