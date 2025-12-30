@@ -1,16 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
 }
 
 android {
-    namespace = "pt.ipt.dam2025.phototravel"
+    namespace = "pt.ipt.dam2025.PhotoTravel"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "pt.ipt.dam2025.phototravel"
+        applicationId = "pt.ipt.dam2025.PhotoTravel"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -38,6 +39,14 @@ android {
 }
 
 dependencies {
+    //dependencia para auth
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // Retrofit para networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+// Conversor Gson para serializar/desserializar JSON
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+
     // Dependência para usar MapLibre
     implementation(libs.android.sdk)
     // Dependêcia para usar pins
