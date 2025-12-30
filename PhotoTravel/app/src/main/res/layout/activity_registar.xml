@@ -9,44 +9,50 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Registar"
         android:textSize="60sp"
-        android:layout_marginLeft="100dp">
+        android:layout_marginLeft="65dp">
 
     </TextView>
 
     <EditText
-        android:id="@+id/emailEditText"
+        android:id="@+id/emailRegistarEditText"
         android:hint="Email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@+id/passwordEditText"
+        android:id="@+id/passwordRegistarEditText"
         android:hint="Password"
         android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <EditText
+        android:id="@+id/passwordRegistar2EditText"
+        android:hint="Confirmar Password"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
-        android:id="@+id/loginButton"
-        android:text="Login"
+        android:id="@+id/registarButton"
+        android:text="Registar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Não tem uma conta?"
+        android:text="Se criou uma conta, inicie sessão"
         android:textSize="15sp"
-        android:layout_marginLeft="110dp">
+        android:layout_marginLeft="60dp">
     </TextView>
 
     <Button
-        android:id="@+id/registarButton"
+        android:id="@+id/retornarLoginButton"
         android:layout_width="105dp"
         android:layout_height="45dp"
-        android:text="Registar"
+        android:text="Login"
         android:layout_marginLeft="130dp"/>
-
 </LinearLayout>

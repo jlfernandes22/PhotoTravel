@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- ... (as suas permissões continuam aqui) ... -->
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,22 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TravelPhoto"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".ui.RegistarActivity"
+            android:exported="false" />
         <!-- LoginActivity AGORA É A ATIVIDADE DE ARRANQUE -->
         <activity
-            android:name="pt.ipt.dam2025.PhotoTravel.ui.LoginActivity"
-            android:exported="true">  <!-- Alterado para "true" -->
+            android:name=".ui.LoginActivity"
+            android:exported="true"> <!-- Alterado para "true" -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- MainActivity já não é a atividade de arranque -->
+        </activity> <!-- MainActivity já não é a atividade de arranque -->
         <activity
             android:name="pt.ipt.dam2025.phototravel.MainActivity"
-            android:exported="false" /> <!-- Alterado para "false" -->
-
+            android:exported="false" />
     </application>
 
 </manifest>
