@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import pt.ipt.dam2025.PhotoTravel.R
 
 class MainActivity : AppCompatActivity() {
 
