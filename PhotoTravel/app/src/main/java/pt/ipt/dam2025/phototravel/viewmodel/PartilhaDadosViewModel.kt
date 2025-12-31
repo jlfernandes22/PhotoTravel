@@ -113,4 +113,30 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
         // Guarda a lista de fotos atualizada no disco
         guardarDadosNoDisco(listaAtual)
     }
+
+    //FOTOS ------------------------------------------------------------------------------
+    fun apagarFoto(fotoParaApagar: FotoDados) {val listaAtual = _listaFotos.value ?: return
+
+        val fotoRemovida = listaAtual.remove(fotoParaApagar)
+
+        // Se a foto foi efetivamente removida, atualizamos os dados.
+        if (fotoRemovida) {
+            // Atualiza o LiveData. Isto vai disparar o observeForever, que por sua vez
+            // vai reagrupar as fotos em coleções e atualizar a UI automaticamente.
+            _listaFotos.value = listaAtual
+
+            // Guarda a nova lista (sem a foto apagada) no disco.
+            guardarDadosNoDisco(listaAtual)
+        }
+    }
+
+    fun renomearFoto(titulo: String, tituloPersonalizado: String) {
+        // Guarda o novo nome no SharedPreferences, usando a data como chave
+        prefsNomes.edit { putString(titulo, tituloPersonalizado) }
+
+        // Força a recriação da lista de coleções para que a UI seja atualizada imediatamente
+        agruparFotosEmColecoes(_listaFotos.value)
+    }
+
+
 }

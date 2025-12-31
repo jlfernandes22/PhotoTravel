@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
 import android.widget.ImageButton
+import pt.ipt.dam2025.phototravel.R
 
 class ColecoesAdapter(
     private var colecoes: List<ColecaoDados>,

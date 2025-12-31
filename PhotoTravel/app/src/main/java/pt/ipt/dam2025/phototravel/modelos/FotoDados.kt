@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class FotoDados(
     val uriString: String,
     val titulo: String,
+    val tituloPersonalizado: String?,
     val data: String,
     val latitude: Double?,
     val longitude: Double?

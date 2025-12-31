@@ -7,22 +7,21 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
-import pt.ipt.dam2025.phototravel.R
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.lifecycle.Observer
-import androidx.fragment.app.activityViewModels
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
 import pt.ipt.dam2025.phototravel.adaptadores.ColecoesAdapter
 import pt.ipt.dam2025.phototravel.DetalheColecaoActivity
+import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.viewmodel.PartilhaDadosViewModel
 import java.io.IOException
+import androidx.fragment.app.activityViewModels
 import java.util.Locale
 
 class ColecoesFragmento : Fragment() {
@@ -68,9 +67,12 @@ class ColecoesFragmento : Fragment() {
     /**
      * Mostra o menu pop-up com as opções para uma coleção (ex: Renomear, Apagar).
      */
+
+// você decide qual menu carregar
     private fun mostrarMenuOpcoes(view: View, colecao: ColecaoDados) {
         val popup = PopupMenu(requireContext(), view)
-        popup.menuInflater.inflate(R.menu.menu, popup.menu)
+        //decidir qual menu inflar
+        popup.menuInflater.inflate(R.menu.menu_colecao, popup.menu)
 
         popup.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {

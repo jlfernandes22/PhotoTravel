@@ -188,7 +188,8 @@ class CamaraFragmento : Fragment() {
                         titulo = name,
                         data = dataDia,
                         latitude = ultimaLocal?.latitude,
-                        longitude = ultimaLocal?.longitude
+                        longitude = ultimaLocal?.longitude,
+                        tituloPersonalizado = null
                     )
                     viewModel.adicionarFotos(novaFoto)
                     val msg = if (ultimaLocal != null) "Foto guardada com localização!" else "Foto guardada (sem GPS)."
