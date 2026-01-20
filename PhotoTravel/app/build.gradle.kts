@@ -3,14 +3,12 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-id("kotlin-parcelize")
+    id("kotlin-parcelize")
 }
 
 android {
     namespace = "pt.ipt.dam2025.phototravel"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     buildFeatures {
         buildConfig = true
@@ -19,14 +17,15 @@ android {
     defaultConfig {
         applicationId = "pt.ipt.dam2025.phototravel"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // 1. ficheiro local.properties
-        val localPropertiesFile = project.rootProject.file("local.properties")        // 2. Create the properties object using the fully qualified name
+        val localPropertiesFile = project.rootProject.file("local.properties")
+        // 2. Create the properties object
         val properties = Properties()
 
         // 3. carregar ficheiro
@@ -58,11 +57,8 @@ android {
 }
 
 dependencies {
-    // No bloco 'dependencies'
-    implementation("io.coil-kt:coil:2.6.0") // Use a versão mais recente
-    // Dependência para usar MapLibre
+    implementation("io.coil-kt:coil:2.6.0")
     implementation(libs.android.sdk)
-    // Dependêcia para usar pins
     implementation(libs.android.plugin.annotation.v9)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -72,7 +68,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    //para poder ler e transformar json
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.fragment:fragment-ktx:1.8.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
@@ -82,6 +77,8 @@ dependencies {
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation("androidx.camera:camera-view:${camerax_version}")
-
-
+    
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
 }

@@ -21,6 +21,7 @@ import pt.ipt.dam2025.phototravel.viewmodel.PartilhaDadosViewModel
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import org.maplibre.android.maps.MapLibreMap
+import pt.ipt.dam2025.phototravel.BuildConfig
 
 
 /**

@@ -29,18 +29,28 @@
         android:roundIcon="@mipmap/logo_round_correct"
         android:supportsRtl="true"
         android:theme="@style/Theme.TravelPhoto">
+
         <activity
-            android:name=".VerFotoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- A NOVA ACTIVITY DEVE SER ADICIONADA AQUI -->
+        </activity>
+
+        <activity
+            android:name=".ui.RegistarActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".VerFotoActivity"
+            android:exported="false" />
+
         <activity android:name=".DetalheColecaoActivity" />
     </application>
 

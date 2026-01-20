@@ -1,8 +1,7 @@
-package pt.ipt.dam2025.PhotoTravel.data.remote
+package pt.ipt.dam2025.phototravel.data.remote
 
-import retrofit2.Retrofit // Importar a classe Retrofit
-import retrofit2.converter.gson.GsonConverterFactory // Importar o conversor Gson
-
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 

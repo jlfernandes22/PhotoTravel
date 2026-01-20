@@ -1,4 +1,4 @@
-package pt.ipt.dam2025.PhotoTravel.ui
+package pt.ipt.dam2025.phototravel.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,10 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import pt.ipt.dam2025.phototravel.MainActivity // CORREÇÃO: Importar a MainActivity do pacote correto
-import pt.ipt.dam2025.PhotoTravel.R
-import pt.ipt.dam2025.PhotoTravel.data.model.LoginRequest
-import pt.ipt.dam2025.PhotoTravel.data.remote.RetrofitInstance
+import pt.ipt.dam2025.phototravel.data.model.LoginRequest
+import pt.ipt.dam2025.phototravel.data.remote.RetrofitInstance
+import pt.ipt.dam2025.phototravel.MainActivity
+import pt.ipt.dam2025.phototravel.R
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.loginButton)
         val registarButton = findViewById<Button>(R.id.registarButton)
 
-        // Lógica para o botão de Login (já existente)
         loginButton.setOnClickListener {
             val emailText = email.text.toString().trim()
             val passwordText = password.text.toString().trim()
@@ -49,11 +49,8 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // ✅ PASSO 2 e 3: Adicionar o OnClickListener para o botão de registo
         registarButton.setOnClickListener {
-            // Cria uma Intent para navegar da LoginActivity para a RegistarActivity
             val intent = Intent(this, RegistarActivity::class.java)
-            // Inicia a nova atividade
             startActivity(intent)
         }
     }
