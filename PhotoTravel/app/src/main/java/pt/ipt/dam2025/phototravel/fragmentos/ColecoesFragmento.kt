@@ -156,6 +156,8 @@ class ColecoesFragmento : Fragment() {
         builder.setNegativeButton("Cancelar", null)
         builder.show()
     }
+
+
     private fun renomearComLocalizacao(colecao: ColecaoDados) {
         // Filtra apenas as fotos que têm coordenadas válidas
         val fotosComGps = colecao.listaFotos.filter { it.latitude != null && it.longitude != null }

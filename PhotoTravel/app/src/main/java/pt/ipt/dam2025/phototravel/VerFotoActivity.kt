@@ -5,8 +5,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -98,27 +101,45 @@ class VerFotoActivity : AppCompatActivity() {
         }
     }
 
-    private fun mostrarDialogoMoverFoto(foto: FotoDados) {
-        val colecoesDisponiveis = viewModel.listaColecoes.value?.filter { it.titulo != foto.data }
+    private fun mostrarDialogoMoverFoto(fotoParaMover: FotoDados) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Mover para...")
 
-        if (colecoesDisponiveis.isNullOrEmpty()) {
-            Toast.makeText(this, "Não existem outras coleções para mover a foto.", Toast.LENGTH_SHORT).show()
-            return
-        }
+        // Infla o layout que contém o Spinner
+        val view = layoutInflater.inflate(R.layout.dialog_mover_foto, null)
+        val spinner = view.findViewById<Spinner>(R.id.spinnerColecoes)
 
-        val nomesDasColecoes = colecoesDisponiveis.map { it.nomePersonalizado ?: it.titulo }.toTypedArray()
+        // 1. Filtrar as coleções (Não mostrar a coleção onde a foto já está)
+        val todasColecoes = viewModel.listaColecoes.value ?: emptyList()
+        val colecaoAtualDaFoto = fotoParaMover.data // A coleção atual está guardada no 'data' da foto
+        val colecoesDestino = todasColecoes.filter { it.titulo != colecaoAtualDaFoto }
 
-        AlertDialog.Builder(this)
-            .setTitle("Mover foto para...")
-            .setItems(nomesDasColecoes) { _, which ->
-                val colecaoDestino = colecoesDisponiveis[which]
-                viewModel.moverFotoParaColecao(foto, colecaoDestino)
-                Toast.makeText(this, "Foto movida para ${colecaoDestino.nomePersonalizado ?: colecaoDestino.titulo}", Toast.LENGTH_SHORT).show()
-                // A atividade fecha porque a foto já não pertence a esta coleção
+        val nomes = colecoesDestino.map { it.nomePersonalizado ?: it.titulo }
+
+        // 2. Configurar o Adaptador para o Spinner (O segredo do Dropdown)
+        // O layout 'simple_spinner_item' é o que aparece na caixa FECHADA
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nomes)
+
+        // O layout 'simple_spinner_dropdown_item' é o que aparece na lista ABERTA
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinner.adapter = adapter
+
+        builder.setView(view)
+
+        builder.setPositiveButton("MOVER") { _, _ ->
+            val posicao = spinner.selectedItemPosition
+            if (posicao != AdapterView.INVALID_POSITION && colecoesDestino.isNotEmpty()) {
+                val destino = colecoesDestino[posicao]
+                viewModel.moverFotoParaColecao(fotoParaMover, destino)
+                Toast.makeText(this, "Foto movida com sucesso!", Toast.LENGTH_SHORT).show()
+                // Como a foto mudou de coleção, fechamos o ecrã de visualização
                 finish()
             }
-            .setNegativeButton("Cancelar", null)
-            .show()
+        }
+
+        builder.setNegativeButton("CANCELAR", null)
+        builder.show()
     }
 
     private fun mostrarDialogoRenomear(foto: FotoDados) {
