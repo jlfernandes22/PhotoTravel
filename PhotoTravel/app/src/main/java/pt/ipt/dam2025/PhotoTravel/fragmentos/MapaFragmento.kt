@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pt.ipt.dam2025.phototravel.R
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.camera.CameraPosition
@@ -14,7 +13,7 @@ import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
 import androidx.core.graphics.scale
 import pt.ipt.dam2025.phototravel.BuildConfig
-
+import pt.ipt.dam2025.phototravel.R
 
 /**
  * A simple [Fragment] subclass.

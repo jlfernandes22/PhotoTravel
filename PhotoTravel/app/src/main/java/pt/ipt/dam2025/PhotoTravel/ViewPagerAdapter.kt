@@ -11,7 +11,9 @@ class ViewPagerAdapter(activity: MainActivity) : FragmentStateAdapter(activity) 
     /**
      * Definir quantidade de fragmentos
      */
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int {
+        return 3
+    }
 
     /**
      * Criar fragmento conforme a posição selecionada
