@@ -177,12 +177,14 @@ class CamaraFragmento : Fragment() {
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Log.e("CamaraFragmento", "Erro ao tirar a foto: ${exc.message}", exc)
                     Toast.makeText(requireContext(), "Erro ao guardar a foto.", Toast.LENGTH_SHORT).show()
                 }
 
+                // Dentro de onImageSaved
+
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val uri = output.savedUri ?: return
+
                     val novaFoto = FotoDados(
                         uriString = uri.toString(),
                         titulo = name,
@@ -191,10 +193,17 @@ class CamaraFragmento : Fragment() {
                         longitude = ultimaLocal?.longitude,
                         tituloPersonalizado = null
                     )
-                    viewModel.adicionarFotos(novaFoto)
+
+
+                    try {
+                        viewModel.adicionarFoto(novaFoto)
+                    } catch (e: Exception) {
+                    }
+
                     val msg = if (ultimaLocal != null) "Foto guardada com localização!" else "Foto guardada (sem GPS)."
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                 }
+
             }
         )
     }

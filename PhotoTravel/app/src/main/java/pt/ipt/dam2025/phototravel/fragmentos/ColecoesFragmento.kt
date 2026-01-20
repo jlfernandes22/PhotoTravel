@@ -29,13 +29,21 @@ class ColecoesFragmento : Fragment() {
     private val viewModel: PartilhaDadosViewModel by activityViewModels()
     private lateinit var adapter: ColecoesAdapter
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.recarregarDados()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_colecoes, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val fab: View = view.findViewById(R.id.fabAddColecao)
+        fab.setOnClickListener {
+            mostrarDialogoCriarColecao()
+        }
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerColecoes)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
@@ -43,11 +51,10 @@ class ColecoesFragmento : Fragment() {
             emptyList(),
             onItemClick = { colecaoClicada ->
                 val intent = Intent(requireContext(), DetalheColecaoActivity::class.java)
-
-                // --- CORREÇÃO AQUI ---
-                // Agora, enviamos a lista de fotos da coleção clicada
-                intent.putParcelableArrayListExtra("LISTA_FOTOS", ArrayList(colecaoClicada.listaFotos))
                 intent.putExtra("NOME_COLECAO", colecaoClicada.nomePersonalizado ?: colecaoClicada.titulo)
+                intent.putExtra("TITULO_COLECAO", colecaoClicada.titulo)
+
+
 
                 startActivity(intent)
             },
@@ -129,6 +136,25 @@ class ColecoesFragmento : Fragment() {
             }
             .setNegativeButton("Cancelar", null)
             .show()
+    }
+    private fun mostrarDialogoCriarColecao() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Nova Coleção")
+
+        val input = EditText(requireContext())
+        input.hint = "Ex: Viagem Paris 2025"
+        builder.setView(input)
+
+        builder.setPositiveButton("Criar") { dialog, _ ->
+            val nome = input.text.toString()
+            if (nome.isNotBlank()) {
+                viewModel.criarColecaoVazia(nome)
+            } else {
+                Toast.makeText(context, "Insira um nome válido", Toast.LENGTH_SHORT).show()
+            }
+        }
+        builder.setNegativeButton("Cancelar", null)
+        builder.show()
     }
     private fun renomearComLocalizacao(colecao: ColecaoDados) {
         // Filtra apenas as fotos que têm coordenadas válidas

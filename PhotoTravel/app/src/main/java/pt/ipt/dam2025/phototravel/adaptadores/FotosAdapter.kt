@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.DiffUtil
 
 import androidx.recyclerview.widget.RecyclerView // AppCompatActivity foi removido daqui
 import pt.ipt.dam2025.phototravel.R
@@ -14,22 +15,22 @@ import pt.ipt.dam2025.phototravel.modelos.FotoDados
 // ✅ A classe agora herda APENAS de RecyclerView.Adapter
 // O construtor primário foi movido para a declaração da classe.
 class FotosAdapter(
-    private val listaFotos: List<FotoDados>,
+    private var listaFotos: List<FotoDados>,
     private val onItemClick: (FotoDados) -> Unit
 ) : RecyclerView.Adapter<FotosAdapter.FotoViewHolder>() {
+
+    fun atualizarFotos(novasFotos: List<FotoDados>) {
+        this.listaFotos = novasFotos
+        notifyDataSetChanged() // Notifica o RecyclerView para se redesenhar
+    }
 
     class FotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.imagem_item_foto)
 
         fun bind(foto: FotoDados) {
             val uri = Uri.parse(foto.uriString)
-
-            // ANTES (Causa o ANR):
-            // imageView.setImageURI(uri)
-
-            // ✅ DEPOIS (Solução com Coil):
             imageView.load(uri) {
-                crossfade(true) // Efeito suave de transição
+                crossfade(true)
             }
         }
     }
@@ -49,4 +50,12 @@ class FotosAdapter(
             onItemClick(foto)
         }
     }
-}
+
+    class FotoDiffCallback : DiffUtil.ItemCallback<FotoDados>() {
+        override fun areItemsTheSame(oldItem: FotoDados, newItem: FotoDados): Boolean =
+            oldItem.uriString == newItem.uriString
+
+        override fun areContentsTheSame(oldItem: FotoDados, newItem: FotoDados): Boolean =
+            oldItem == newItem
+    }
+    }

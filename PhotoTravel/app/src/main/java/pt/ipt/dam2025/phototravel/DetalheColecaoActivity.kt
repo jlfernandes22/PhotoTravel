@@ -1,58 +1,65 @@
 package pt.ipt.dam2025.phototravel
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipt.dam2025.phototravel.adaptadores.FotosAdapter
-import pt.ipt.dam2025.phototravel.modelos.FotoDados
+import pt.ipt.dam2025.phototravel.viewmodel.PartilhaDadosViewModel
 
 class DetalheColecaoActivity : AppCompatActivity() {
 
+    private val viewModel: PartilhaDadosViewModel by viewModels()
+    private lateinit var adapter: FotosAdapter
+    private var tituloColecao: String? = null
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.recarregarDados()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_detalhe_colecao)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.detalhes)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        tituloColecao = intent.getStringExtra("TITULO_COLECAO")
+        if (tituloColecao == null) {
+            finish()
+            return
         }
 
-        // 1. Receber o nome e a lista de fotos do Intent
-        val nomeDaColecao = intent.getStringExtra("NOME_COLECAO") ?: "Detalhes"
-        val fotosDoAlbum: ArrayList<FotoDados>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableArrayListExtra("LISTA_FOTOS", FotoDados::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableArrayListExtra("LISTA_FOTOS")
+        val textViewNomeColecao = findViewById<TextView>(R.id.txtTituloAlbum)
+        // Usa o nome personalizado se existir, senão usa o título (ID)
+        textViewNomeColecao.text = intent.getStringExtra("NOME_COLECAO") ?: tituloColecao
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerFotosAlbum)
+        recyclerView.layoutManager = GridLayoutManager(this, 3)
+
+        adapter = FotosAdapter(emptyList()) { fotoClicada ->
+            val intent = Intent(this, VerFotoActivity::class.java)
+            intent.putExtra("URI_DA_FOTO", fotoClicada.uriString)
+            // IMPORTANTE: Passar o título da coleção para saber de onde apagar
+            intent.putExtra("TITULO_COLECAO", fotoClicada.data)
+            startActivity(intent)
         }
+        recyclerView.adapter = adapter
 
-        findViewById<TextView>(R.id.txtTituloAlbum).text = nomeDaColecao
+        // Observar as coleções
+        viewModel.listaColecoes.observe(this, Observer { colecoes ->
+            val colecaoAtualizada = colecoes.find { it.titulo == tituloColecao }
 
-        // A sua referência ao RecyclerView está na variável 'recycler'
-        val recycler = findViewById<RecyclerView>(R.id.recyclerFotosAlbum)
-        recycler.layoutManager = GridLayoutManager(this, 3)
-
-        // 2. Se a lista de fotos não for nula, configura o adapter
-        if (fotosDoAlbum != null) {
-            // ✅ CORREÇÃO 1: Usar 'fotosDoAlbum' em vez de 'minhaListaDeFotos'
-            // ✅ CORREÇÃO 3: Remover o ')' extra no final da linha
-            val adapter = FotosAdapter(fotosDoAlbum) { fotoClicada ->
-                // ESTE BLOCO DE CÓDIGO É EXECUTADO QUANDO UMA FOTO É CLICADA
-                //Toast.makeText(this, "Foto clicada: ${fotoClicada.uriString}", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, VerFotoActivity::class.java)
-                intent.putExtra("URI_DA_FOTO", fotoClicada.uriString)
-                startActivity(intent)
+            if (colecaoAtualizada != null) {
+                // Criamos uma cópia da lista para garantir que o Adapter deteta a mudança
+                adapter.atualizarFotos(colecaoAtualizada.listaFotos.toList())
+            } else {
+                finish() // Se a coleção deixou de existir, sai do ecrã
             }
-            recycler.adapter = adapter
-        }
+        })
     }
+
+
 }
