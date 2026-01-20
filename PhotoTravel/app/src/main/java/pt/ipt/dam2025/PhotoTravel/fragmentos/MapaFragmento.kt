@@ -12,8 +12,8 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.plugins.annotation.SymbolManager
 import org.maplibre.android.plugins.annotation.SymbolOptions
 import androidx.core.graphics.scale
-import pt.ipt.dam2025.PhotoTravel.R
-
+import pt.ipt.dam2025.phototravel.BuildConfig
+import pt.ipt.dam2025.phototravel.R
 
 /**
  * A simple [Fragment] subclass.
@@ -25,6 +25,8 @@ class MapaFragmento : Fragment() {
     // variável para os pins
     private lateinit var pinManager: SymbolManager
     private lateinit var vistaMapa: MapView
+    //Chave API do ficheiro local.properties
+    val apikey = BuildConfig.API_KEY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +57,7 @@ class MapaFragmento : Fragment() {
 
         vistaMapa.getMapAsync { map ->
 
-            val estiloURL = "https://api.maptiler.com/maps/aquarelle/style.json?key=WFHHB4Zg3NcUnxvMy6uZ"
-
+            val estiloURL = "https://api.maptiler.com/maps/satellite/style.json?key=$apikey"
             map.setStyle(estiloURL) { estilo ->
 
                 //ativar pins
@@ -78,6 +79,8 @@ class MapaFragmento : Fragment() {
 
                 //posição do pin
                 val parisLocal = LatLng(48.8566, 2.3522) // Paris coordinates
+
+
                 //criar pin
                 val pin = pinManager.create(
                     SymbolOptions().
@@ -88,11 +91,22 @@ class MapaFragmento : Fragment() {
                     // withTextField("PARIS").
                     withIconSize(0.5f)
                 )
+
+
                 //posição inicial do mapa
                 map.cameraPosition = CameraPosition.Builder().
                         target(LatLng(48.8566, 2.3522)).
                         zoom(10.0).
                         build()
+
+
+
+
+
+
+
+
+
 
                 //  testar toque no pin e mostrar mensagem
                 /**
