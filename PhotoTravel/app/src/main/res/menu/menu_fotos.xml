@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_renomear_foto"
+        android:title="Renomear Foto" />
+
+    <item
+        android:id="@+id/menu_apagar_foto"
+        android:title="Apagar foto" />
+
+
+    <item
+        android:id="@+id/menu_mover_foto"
+        android:title="Mover foto" />
+</menu>
