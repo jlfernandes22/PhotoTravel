@@ -58,6 +58,8 @@ android {
 }
 
 dependencies {
+    // No bloco 'dependencies'
+    implementation("io.coil-kt:coil:2.6.0") // Use a versão mais recente
     // Dependência para usar MapLibre
     implementation(libs.android.sdk)
     // Dependêcia para usar pins

@@ -1,5 +1,6 @@
 package pt.ipt.dam2025.phototravel
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
@@ -36,12 +37,22 @@ class DetalheColecaoActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.txtTituloAlbum).text = nomeDaColecao
 
+        // A sua referência ao RecyclerView está na variável 'recycler'
         val recycler = findViewById<RecyclerView>(R.id.recyclerFotosAlbum)
         recycler.layoutManager = GridLayoutManager(this, 3)
 
         // 2. Se a lista de fotos não for nula, configura o adapter
         if (fotosDoAlbum != null) {
-            recycler.adapter = FotosAdapter(fotosDoAlbum)
+            // ✅ CORREÇÃO 1: Usar 'fotosDoAlbum' em vez de 'minhaListaDeFotos'
+            // ✅ CORREÇÃO 3: Remover o ')' extra no final da linha
+            val adapter = FotosAdapter(fotosDoAlbum) { fotoClicada ->
+                // ESTE BLOCO DE CÓDIGO É EXECUTADO QUANDO UMA FOTO É CLICADA
+                //Toast.makeText(this, "Foto clicada: ${fotoClicada.uriString}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, VerFotoActivity::class.java)
+                intent.putExtra("URI_DA_FOTO", fotoClicada.uriString)
+                startActivity(intent)
+            }
+            recycler.adapter = adapter
         }
     }
 }
