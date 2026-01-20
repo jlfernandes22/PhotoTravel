@@ -50,17 +50,23 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
             )
             colecoesAtuais.add(colecaoAlvo)
         } else {
-            // Se a coleção existe, adicionamos a foto
+            // Se a coleção já existe (pode estar vazia ou ter fotos)
             val listaAtualizada = colecaoAlvo.listaFotos.toMutableList()
             listaAtualizada.add(fotoParaAdicionar)
 
-            // ✅ CRUCIAL: Se a coleção não tinha capa (estava vazia), a nova foto vira a capa
-            val novaCapa = colecaoAlvo.capaUri ?: fotoParaAdicionar.uriString
+            // ✅ REGRA DE OURO:
+            // Se a capaUri for null (coleção vazia), a nova foto torna-se a capa.
+            // Se já existia uma capa, mantemos a que lá estava.
+            val novaCapa = if (colecaoAlvo.capaUri == null) {
+                fotoParaAdicionar.uriString
+            } else {
+                colecaoAlvo.capaUri
+            }
 
             val indice = colecoesAtuais.indexOf(colecaoAlvo)
             colecoesAtuais[indice] = colecaoAlvo.copy(
                 listaFotos = listaAtualizada,
-                capaUri = novaCapa
+                capaUri = novaCapa // Atualizamos a capa aqui!
             )
         }
 
@@ -68,38 +74,36 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
         _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
         salvarColecoesNoArmazenamento(colecoesAtuais)
     }
-
     /**
      * Apaga uma foto específica de todas as listas e da persistência.
      */
     /**
      * Apaga uma foto específica de todas as listas e da persistência.
      */fun apagarFoto(fotoParaApagar: FotoDados) {
-        val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: return
-        val indiceColecao = colecoesAtuais.indexOfFirst { it.titulo == fotoParaApagar.data }
-        if (indiceColecao == -1) return
+        val colecoesAtuais = _listaColecoes.value?.map { it.copy() }?.toMutableList() ?: return
+        val indice = colecoesAtuais.indexOfFirst { it.titulo == fotoParaApagar.data }
 
-        val colecaoOrigem = colecoesAtuais[indiceColecao]
-        val fotosAtualizadas = colecaoOrigem.listaFotos.toMutableList()
-        fotosAtualizadas.removeAll { it.uriString == fotoParaApagar.uriString }
+        if (indice != -1) {
+            val colecao = colecoesAtuais[indice]
+            val fotosNovas = colecao.listaFotos.filter { it.uriString != fotoParaApagar.uriString }
 
-        // ✅ LOGICA DE CAPA MELHORADA:
-        val novaCapa = if (fotosAtualizadas.isEmpty()) {
-            null // Se não há fotos, a preview TEM de ser null para o Adapter limpar a imagem
-        } else if (colecaoOrigem.capaUri == fotoParaApagar.uriString) {
-            fotosAtualizadas.first().uriString // Se apaguei a foto que era capa, usa a próxima disponível
-        } else {
-            colecaoOrigem.capaUri // Mantém a capa atual
+            // Se a foto apagada era a capa, ou se a coleção ficou vazia, atualizamos a capaUri
+            val novaCapa = when {
+                fotosNovas.isEmpty() -> null
+                colecao.capaUri == fotoParaApagar.uriString -> fotosNovas.first().uriString
+                else -> colecao.capaUri
+            }
+
+            colecoesAtuais[indice] = colecao.copy(
+                listaFotos = fotosNovas,
+                capaUri = novaCapa
+            )
+
+            // ✅ Atualizamos o valor com uma lista TOTALMENTE NOVA (.toList())
+            _listaColecoes.value = colecoesAtuais.toList()
+            _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
+            salvarColecoesNoArmazenamento(colecoesAtuais)
         }
-
-        colecoesAtuais[indiceColecao] = colecaoOrigem.copy(
-            listaFotos = fotosAtualizadas,
-            capaUri = novaCapa
-        )
-
-        _listaColecoes.value = colecoesAtuais
-        _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
-        salvarColecoesNoArmazenamento(colecoesAtuais)
     }
 
     fun criarColecaoVazia(nome: String) {
@@ -232,7 +236,16 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
             val colecaoOrigem = colecoesAtuais[indiceOrigem]
             val fotosOrigemAtualizadas = colecaoOrigem.listaFotos.toMutableList()
             fotosOrigemAtualizadas.removeAll { it.uriString == fotoParaMover.uriString }
-            colecoesAtuais[indiceOrigem] = colecaoOrigem.copy(listaFotos = fotosOrigemAtualizadas)
+
+            // Se removemos a foto que era a capa, precisamos de uma nova capa ou null
+            val novaCapaOrigem = if (fotosOrigemAtualizadas.isEmpty()) null
+            else if (colecaoOrigem.capaUri == fotoParaMover.uriString) fotosOrigemAtualizadas.first().uriString
+            else colecaoOrigem.capaUri
+
+            colecoesAtuais[indiceOrigem] = colecaoOrigem.copy(
+                listaFotos = fotosOrigemAtualizadas,
+                capaUri = novaCapaOrigem
+            )
         }
 
         // --- Passo 2: Adicionar ao destino ---
@@ -242,16 +255,17 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
             val colecaoDestinoOriginal = colecoesAtuais[indiceDestino]
             val fotosDestinoAtualizadas = colecaoDestinoOriginal.listaFotos.toMutableList()
             fotosDestinoAtualizadas.add(fotoMovida)
-            colecoesAtuais[indiceDestino] = colecaoDestinoOriginal.copy(listaFotos = fotosDestinoAtualizadas)
+
+            // ✅ CORREÇÃO AQUI: Se a coleção destino não tinha capa, ela ganha esta foto como capa
+            val novaCapaDestino = colecaoDestinoOriginal.capaUri ?: fotoMovida.uriString
+
+            colecoesAtuais[indiceDestino] = colecaoDestinoOriginal.copy(
+                listaFotos = fotosDestinoAtualizadas,
+                capaUri = novaCapaDestino
+            )
         }
 
-        // --- PASSO 3: APAGADO ---
-        // Removemos a linha: colecoesAtuais.removeAll { it.listaFotos.isEmpty() ... }
-        // Agora a coleção vazia permanece na lista.
-
-        // --- Passo 4: Notificar ---
-        _listaColecoes.value = colecoesAtuais
-        _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
+        _listaColecoes.value = colecoesAtuais.toList() // .toList() força a atualização do LiveData
         salvarColecoesNoArmazenamento(colecoesAtuais)
     }
 
@@ -287,8 +301,9 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
     // Dentro do teu PartilhaDadosViewModel.kt, adiciona esta função:
 
     fun recarregarDados() {
-        val colecoesIniciais = carregarColecoesDoArmazenamento()
-        _listaColecoes.value = colecoesIniciais
-        _listaFotos.value = colecoesIniciais.flatMap { it.listaFotos }
+        val colecoesDoDisco = carregarColecoesDoArmazenamento()
+        // Ao atribuir uma lista nova, o LiveData dispara obrigatoriamente
+        _listaColecoes.value = colecoesDoDisco.toList()
+        _listaFotos.value = colecoesDoDisco.flatMap { it.listaFotos }
     }
 }

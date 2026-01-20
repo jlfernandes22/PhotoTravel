@@ -34,7 +34,16 @@ class ColecoesAdapter(
         val item = colecoes[position]
 
         holder.titulo.text = item.nomePersonalizado ?: item.titulo
+            holder.data.text = "${item.listaFotos.size} fotos"
 
+            // ✅ Forçar limpeza/atualização da imagem
+            holder.image.setImageDrawable(null) // Limpa o cache visual anterior
+
+        if (!item.capaUri.isNullOrEmpty()) {
+            holder.image.setImageURI(Uri.parse(item.capaUri))
+        } else {
+            holder.image.setImageResource(android.R.drawable.ic_menu_gallery)
+        }
         // Isto já irá mostrar "0 fotos" automaticamente se a lista estiver vazia
         val numeroDeFotos = item.listaFotos.size
         holder.data.text = "$numeroDeFotos fotos"
@@ -43,10 +52,6 @@ class ColecoesAdapter(
         if (item.listaFotos.isEmpty()) {
             // Se não há fotos, mostra um ícone de "álbum vazio" ou limpa a imagem
             holder.image.setImageResource(android.R.drawable.ic_menu_gallery) // Ícone padrão do Android
-            if (item.capaUri != null) {
-
-                holder.image.setImageURI(Uri.parse(item.capaUri))
-            }
             // Ou podes usar um drawable teu: holder.image.setImageResource(R.drawable.placeholder_vazio)
         } else {
             try {
