@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selecione o álbum de destino:"
+        android:textSize="14sp"
+        android:paddingBottom="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#444444" />
+
+    <Spinner
+        android:id="@+id/spinnerColecoes"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="40dp"
+        android:spinnerMode="dropdown"
+        android:background="@drawable/bg_spinner_custom"
+        android:elevation="2dp" />
+
+</LinearLayout>
