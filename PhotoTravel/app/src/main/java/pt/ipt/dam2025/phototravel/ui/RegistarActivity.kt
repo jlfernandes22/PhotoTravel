@@ -22,6 +22,7 @@ class RegistarActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.passwordRegistarEditText)
         val passwordConfirmada = findViewById<EditText>(R.id.passwordRegistar2EditText)
         val button = findViewById<Button>(R.id.registarButton)
+        val retornarLoginButton = findViewById<Button>(R.id.retornarLoginButton)
 
         button.setOnClickListener {
             val emailText = email.text.toString().trim()
@@ -50,6 +51,12 @@ class RegistarActivity : AppCompatActivity() {
                     Toast.makeText(this@RegistarActivity, "Erro de ligação: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+
+        retornarLoginButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

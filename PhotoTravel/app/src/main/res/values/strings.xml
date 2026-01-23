@@ -5,4 +5,14 @@
     <string name="colecoes">Coleções</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="foto_em_ecra_cheio" />
+    <string name="e_mail">E-mail</string>
+    <string name="login">Login</string>
+    <string name="n_o_tem_uma_conta">Não tem uma conta?</string>
+    <string name="iniciar_sess_o">Iniciar Sessão</string>
+    <string name="registar">Registar</string>
+    <string name="password">Password</string>
+    <string name="confirmar_password">Confirmar Password</string>
+    <string name="criar_conta">Criar Conta</string>
+    <string name="j_criou_uma_conta">Já criou uma conta?</string>
+    <string name="iniciar_sess_o_aqui">Iniciar sessão aqui</string>
 </resources>

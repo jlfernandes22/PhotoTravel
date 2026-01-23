@@ -6,7 +6,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="32dp"
-    android:background="#F8F9FA">
+    android:background="?attr/colorSurface">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,8 +14,8 @@
         android:layout_marginTop="60dp"
         android:layout_marginBottom="40dp"
         android:fontFamily="sans-serif-black"
-        android:text="Login"
-        android:textColor="#333333"
+        android:text="@string/login"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="48sp" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -23,14 +23,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="E-mail"
+        android:hint="@string/e_mail"
         app:startIconDrawable="@android:drawable/ic_dialog_email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="?attr/colorOnSurface" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -38,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:hint="Password"
+        android:hint="@string/password"
         app:passwordToggleEnabled="true"
         app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
 
@@ -46,17 +47,18 @@
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="?attr/colorOnSurface" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:text="Iniciar Sessão"
+        android:text="@string/iniciar_sess_o"
         android:textAllCaps="false"
         android:textSize="16sp"
-        android:backgroundTint="#6200EE"
+        android:backgroundTint="?attr/colorPrimary"
         app:cornerRadius="8dp" />
 
     <LinearLayout
@@ -69,8 +71,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Não tem uma conta?"
-            android:textColor="#666666"
+            android:text="@string/n_o_tem_uma_conta"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="14sp" />
 
         <Button
@@ -78,9 +80,9 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Registar"
+            android:text="@string/registar"
             android:textAllCaps="false"
-            android:textColor="#6200EE"
+            android:textColor="?attr/colorPrimary"
             android:textStyle="bold" />
     </LinearLayout>
 
