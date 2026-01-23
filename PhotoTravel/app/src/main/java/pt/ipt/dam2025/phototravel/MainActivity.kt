@@ -51,14 +51,15 @@ class MainActivity : AppCompatActivity() {
                 tabLayout.getTabAt(position)?.select()
             }
         })
+
+
+        // Tenta ir buscar novidades ao servidor
+        // Passamos o context para ele conseguir ler o SharedPreferences
+        viewModel.sincronizarDados(this)
+
     }
 
-    /**
-     * ✅ ESTE É O PONTO CHAVE:
-     * Sempre que voltas à MainActivity (ex: carregando no 'Back' do Android),
-     * o onResume é chamado. Aqui forçamos o ViewModel a ler o que foi
-     * alterado noutras Activities.
-     */
+
     override fun onResume() {
         super.onResume()
         viewModel.recarregarDados()

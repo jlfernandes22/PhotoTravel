@@ -1,6 +1,6 @@
 package pt.ipt.dam2025.phototravel.adaptadores
 
-import android.content.Intent // <-- ERRO 1 CORRIGIDO: Importar Intent
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +9,10 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
-import pt.ipt.dam2025.phototravel.DetalheColecaoActivity // <-- ERRO 2 CORRIGIDO: Importar a sua atividade
+import pt.ipt.dam2025.phototravel.DetalheColecaoActivity
 
 class ColecoesAdapter(
     private var colecoes: List<ColecaoDados>,
@@ -30,36 +31,35 @@ class ColecoesAdapter(
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_colecao, parent, false)
         return ViewHolder(view)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = colecoes[position]
 
-        holder.titulo.text = item.nomePersonalizado ?: item.titulo
-            holder.data.text = "${item.listaFotos.size} fotos"
+        // 1. Tratamento do Título (Fallback para "Sem Título")
+        val tituloExibicao = item.nomePersonalizado ?: item.titulo
+        holder.titulo.text = if (tituloExibicao.isNullOrBlank()) "Sem Título" else tituloExibicao
 
-            // ✅ Forçar limpeza/atualização da imagem
-            holder.image.setImageDrawable(null) // Limpa o cache visual anterior
-
-        if (!item.capaUri.isNullOrEmpty()) {
-            holder.image.setImageURI(Uri.parse(item.capaUri))
-        } else {
-            holder.image.setImageResource(android.R.drawable.ic_menu_gallery)
-        }
-        // Isto já irá mostrar "0 fotos" automaticamente se a lista estiver vazia
+        // 2. Tratamento da Quantidade de Fotos
         val numeroDeFotos = item.listaFotos.size
         holder.data.text = "$numeroDeFotos fotos"
 
-        // ✅ Lógica para a imagem de capa
-        if (item.listaFotos.isEmpty()) {
-            // Se não há fotos, mostra um ícone de "álbum vazio" ou limpa a imagem
-            holder.image.setImageResource(android.R.drawable.ic_menu_gallery) // Ícone padrão do Android
-            // Ou podes usar um drawable teu: holder.image.setImageResource(R.drawable.placeholder_vazio)
+        // 3. Carregamento da Imagem usando Coil (suporta URIs locais e Base64)
+        if (!item.capaUri.isNullOrEmpty()) {
+            holder.image.load(item.capaUri) {
+                crossfade(true)
+                placeholder(android.R.drawable.ic_menu_gallery)
+                error(android.R.drawable.ic_menu_report_image)
+            }
         } else {
-            try {
-                // Se houver fotos, tenta carregar a capa definida
-                val uri = Uri.parse(item.capaUri)
-                holder.image.setImageURI(uri)
-            } catch (e: Exception) {
-                holder.image.setImageResource(android.R.drawable.ic_menu_report_image)
+            // Fallback se não houver capa: tenta usar a primeira foto ou ícone padrão
+            val primeiraFoto = item.listaFotos.firstOrNull()?.uriString
+            if (!primeiraFoto.isNullOrEmpty()) {
+                holder.image.load(primeiraFoto) {
+                    crossfade(true)
+                    placeholder(android.R.drawable.ic_menu_gallery)
+                }
+            } else {
+                holder.image.setImageResource(android.R.drawable.ic_menu_gallery)
             }
         }
 

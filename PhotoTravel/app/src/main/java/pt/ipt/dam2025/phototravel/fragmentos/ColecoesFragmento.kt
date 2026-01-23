@@ -31,7 +31,9 @@ class ColecoesFragmento : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // Tenta carregar o que já está no disco
         viewModel.recarregarDados()
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,7 +117,7 @@ class ColecoesFragmento : Fragment() {
         builder.setPositiveButton("Guardar") { dialog, _ ->
             val novoNome = input.text.toString()
             if (novoNome.isNotBlank()) {
-                viewModel.renomearColecao(colecao.titulo, novoNome)
+                viewModel.renomearColecao(colecao.titulo ?: "", novoNome)
             }
             dialog.dismiss()
         }
@@ -184,7 +186,7 @@ class ColecoesFragmento : Fragment() {
 
                 // Mostra um Toast para feedback e chama o ViewModel para guardar
                 Toast.makeText(context, "Coleção renomeada para: $nomeDoLocal", Toast.LENGTH_LONG).show()
-                viewModel.renomearColecao(colecao.titulo, nomeDoLocal)
+                viewModel.renomearColecao(colecao.titulo ?: "", nomeDoLocal)
             } else {
                 Toast.makeText(context, "Não foi possível encontrar um nome para esta localização.", Toast.LENGTH_SHORT).show()
             }

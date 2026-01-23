@@ -13,7 +13,7 @@ import pt.ipt.dam2025.phototravel.modelos.FotoDados
 class FotosAdapter(
     private var listaFotos: List<FotoDados>,
     private val onItemClick: (FotoDados) -> Unit,
-    private val onItemLongClick: (FotoDados) -> Unit // ✅ NOVO: Para mover a foto
+    private val onItemLongClick: (FotoDados) -> Unit
 ) : RecyclerView.Adapter<FotosAdapter.FotoViewHolder>() {
 
     fun atualizarFotos(novasFotos: List<FotoDados>) {
@@ -31,22 +31,29 @@ class FotosAdapter(
     override fun onBindViewHolder(holder: FotoViewHolder, position: Int) {
         val foto = listaFotos[position]
 
-        // Carregar a imagem
-        val uri = Uri.parse(foto.uriString)
-        holder.imageView.load(uri) {
-            crossfade(true)
-            placeholder(R.drawable.ic_launcher_background) // opcional
+        // Deteta se é Base64 puro e adiciona o prefixo se necessário
+        val imagemParaCarregar = if (!foto.uriString.startsWith("http") && 
+            !foto.uriString.startsWith("content") && 
+            !foto.uriString.startsWith("data:") &&
+            !foto.uriString.startsWith("/")) {
+            "data:image/jpeg;base64,${foto.uriString}"
+        } else {
+            foto.uriString
         }
 
-        // Clique normal: Abrir foto
+        holder.imageView.load(imagemParaCarregar) {
+            crossfade(true)
+            placeholder(android.R.drawable.ic_menu_gallery)
+            error(android.R.drawable.ic_menu_report_image)
+        }
+
         holder.itemView.setOnClickListener {
             onItemClick(foto)
         }
 
-        // ✅ NOVO: Clique longo: Mover foto
         holder.itemView.setOnLongClickListener {
             onItemLongClick(foto)
-            true // 'true' indica que o clique foi consumido
+            true
         }
     }
 

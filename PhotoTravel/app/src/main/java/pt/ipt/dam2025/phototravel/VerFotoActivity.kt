@@ -167,7 +167,6 @@ class VerFotoActivity : AppCompatActivity() {
             .setTitle("Apagar Foto")
             .setMessage("Tem a certeza que quer apagar permanentemente esta foto?")
             .setPositiveButton("Apagar") { _, _ ->
-                // ✅ PASSO 2 (CORREÇÃO): A chamada ao viewModel desencadeia a atualização do LiveData
                 viewModel.apagarFoto(foto)
                 // A observação do LiveData no onCreate tratará de fechar a atividade.
                 // A chamada finish() aqui é redundante, mas inofensiva.
