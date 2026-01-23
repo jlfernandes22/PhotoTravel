@@ -1,52 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="24dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:background="#F8F9FA">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="sans-serif-black"
         android:text="Login"
-        android:textSize="60sp"
-        android:layout_marginLeft="100dp">
+        android:textColor="#333333"
+        android:textSize="48sp" />
 
-    </TextView>
-
-    <EditText
-        android:id="@+id/emailEditText"
-        android:hint="Email"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="E-mail"
+        app:startIconDrawable="@android:drawable/ic_dialog_email">
 
-    <EditText
-        android:id="@+id/passwordEditText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
         android:hint="Password"
-        android:inputType="textPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        app:passwordToggleEnabled="true"
+        app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/loginButton"
-        android:text="Login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="56dp"
+        android:text="Iniciar Sessão"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:backgroundTint="#6200EE"
+        app:cornerRadius="8dp" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Não tem uma conta?"
-        android:textSize="15sp"
-        android:layout_marginLeft="110dp">
-    </TextView>
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/registarButton"
-        android:layout_width="105dp"
-        android:layout_height="45dp"
-        android:text="Registar"
-        android:layout_marginLeft="130dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Não tem uma conta?"
+            android:textColor="#666666"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/registarButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registar"
+            android:textAllCaps="false"
+            android:textColor="#6200EE"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </LinearLayout>
