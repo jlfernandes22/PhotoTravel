@@ -6,7 +6,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="32dp"
-    android:background="@color/white">
+    android:background="?attr/colorSurface">
 
     <ImageView
         android:id="@+id/logoApp"
@@ -32,7 +32,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="@string/e_mail"
-        app:startIconDrawable="@android:drawable/ic_dialog_email">
+        app:startIconDrawable="@android:drawable/ic_dialog_email"
+        app:startIconTint="?attr/colorOnSurfaceVariant"
+        app:hintTextColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailEditText"
@@ -49,7 +51,10 @@
         android:layout_marginBottom="24dp"
         android:hint="@string/password"
         app:passwordToggleEnabled="true"
-        app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
+        app:passwordToggleTint="?attr/colorOnSurfaceVariant"
+        app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+        app:startIconTint="?attr/colorOnSurfaceVariant"
+        app:hintTextColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
@@ -67,6 +72,7 @@
         android:textAllCaps="false"
         android:textSize="16sp"
         android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
         app:cornerRadius="8dp" />
 
     <LinearLayout
