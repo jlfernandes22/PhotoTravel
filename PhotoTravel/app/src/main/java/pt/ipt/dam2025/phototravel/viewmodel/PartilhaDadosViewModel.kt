@@ -1,5 +1,3 @@
-// Em pt/ipt/dam2025/phototravel/viewmodel/PartilhaDadosViewModel.kt
-
 package pt.ipt.dam2025.phototravel.viewmodel
 
 import android.app.Application
@@ -12,27 +10,38 @@ import com.google.gson.reflect.TypeToken
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
 import pt.ipt.dam2025.phototravel.modelos.FotoDados
 
+/**
+ * <summary>
+ * ViewModel central da aplicação PhotoTravel.
+ * Gere o estado global das coleções e fotos, permitindo a partilha de dados entre fragmentos e activities.
+ * </summary>
+ */
 class PartilhaDadosViewModel(application: Application) : AndroidViewModel(application) {
 
-    // 1. LiveData para a lista de COLEÇÕES
+    //  LiveData privado e público para a lista de COLEÇÕES
     private val _listaColecoes = MutableLiveData<List<ColecaoDados>>()
     val listaColecoes: LiveData<List<ColecaoDados>> get() = _listaColecoes
 
-    // 2. LiveData para a lista de TODAS AS FOTOS
+    //  LiveData privado e público para a lista global de TODAS AS FOTOS
     private val _listaFotos = MutableLiveData<List<FotoDados>>()
     val listaFotos: LiveData<List<FotoDados>> get() = _listaFotos
 
+    /**
+     * <summary>
+     * Bloco de inicialização: Carrega os dados guardados no disco assim que o ViewModel é instanciado.
+     * </summary>
+     */
     init {
-        // Carrega os dados persistidos quando o ViewModel é criado
         val colecoesIniciais = carregarColecoesDoArmazenamento()
         _listaColecoes.value = colecoesIniciais
-        // Inicializa a lista de fotos a partir das coleções carregadas
         _listaFotos.value = colecoesIniciais.flatMap { it.listaFotos }
     }
 
     /**
-     * Adiciona uma nova foto. Se a coleção não for especificada,
-     * é adicionada a uma coleção padrão chamada "Geral".
+     * <summary>
+     * Adiciona uma nova foto a uma coleção (baseada na data ou na coleção "Geral").
+     * Gere automaticamente a criação de novas coleções e a definição da imagem de capa.
+     * </summary>
      */
     fun adicionarFoto(novaFoto: FotoDados) {
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: mutableListOf()
@@ -42,7 +51,6 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
         var colecaoAlvo = colecoesAtuais.find { it.titulo.equals(nomeColecaoAlvo, ignoreCase = true) }
 
         if (colecaoAlvo == null) {
-            // Se a coleção não existe, cria com a foto como capa
             colecaoAlvo = ColecaoDados(
                 titulo = nomeColecaoAlvo,
                 listaFotos = mutableListOf(fotoParaAdicionar),
@@ -50,36 +58,28 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
             )
             colecoesAtuais.add(colecaoAlvo)
         } else {
-            // Se a coleção já existe (pode estar vazia ou ter fotos)
             val listaAtualizada = colecaoAlvo.listaFotos.toMutableList()
             listaAtualizada.add(fotoParaAdicionar)
 
-            // ✅ REGRA DE OURO:
-            // Se a capaUri for null (coleção vazia), a nova foto torna-se a capa.
-            // Se já existia uma capa, mantemos a que lá estava.
-            val novaCapa = if (colecaoAlvo.capaUri == null) {
-                fotoParaAdicionar.uriString
-            } else {
-                colecaoAlvo.capaUri
-            }
+            val novaCapa = colecaoAlvo.capaUri ?: fotoParaAdicionar.uriString
 
             val indice = colecoesAtuais.indexOf(colecaoAlvo)
             colecoesAtuais[indice] = colecaoAlvo.copy(
                 listaFotos = listaAtualizada,
-                capaUri = novaCapa // Atualizamos a capa aqui!
+                capaUri = novaCapa
             )
         }
 
-        _listaColecoes.value = colecoesAtuais
-        _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
-        salvarColecoesNoArmazenamento(colecoesAtuais)
+        atualizarEstadosEPersistir(colecoesAtuais)
     }
+
     /**
-     * Apaga uma foto específica de todas as listas e da persistência.
+     * <summary>
+     * Remove uma foto específica. Se a foto for a capa da coleção,
+     * define automaticamente a próxima foto disponível como nova capa.
+     * </summary>
      */
-    /**
-     * Apaga uma foto específica de todas as listas e da persistência.
-     */fun apagarFoto(fotoParaApagar: FotoDados) {
+    fun apagarFoto(fotoParaApagar: FotoDados) {
         val colecoesAtuais = _listaColecoes.value?.map { it.copy() }?.toMutableList() ?: return
         val indice = colecoesAtuais.indexOfFirst { it.titulo == fotoParaApagar.data }
 
@@ -87,223 +87,150 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
             val colecao = colecoesAtuais[indice]
             val fotosNovas = colecao.listaFotos.filter { it.uriString != fotoParaApagar.uriString }
 
-            // Se a foto apagada era a capa, ou se a coleção ficou vazia, atualizamos a capaUri
             val novaCapa = when {
                 fotosNovas.isEmpty() -> null
                 colecao.capaUri == fotoParaApagar.uriString -> fotosNovas.first().uriString
                 else -> colecao.capaUri
             }
 
-            colecoesAtuais[indice] = colecao.copy(
-                listaFotos = fotosNovas,
-                capaUri = novaCapa
-            )
-
-            // ✅ Atualizamos o valor com uma lista TOTALMENTE NOVA (.toList())
-            _listaColecoes.value = colecoesAtuais.toList()
-            _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
-            salvarColecoesNoArmazenamento(colecoesAtuais)
+            colecoesAtuais[indice] = colecao.copy(listaFotos = fotosNovas, capaUri = novaCapa)
+            atualizarEstadosEPersistir(colecoesAtuais)
         }
     }
 
+    /**
+     * <summary> Cria uma nova coleção vazia sem fotos associadas. </summary>
+     */
     fun criarColecaoVazia(nome: String) {
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: mutableListOf()
-
-        // Verifica se já existe uma coleção com esse nome para evitar duplicados
-        if (colecoesAtuais.any { it.titulo.equals(nome, ignoreCase = true) }) {
-            return
-        }
+        if (colecoesAtuais.any { it.titulo.equals(nome, ignoreCase = true) }) return
 
         val novaColecao = ColecaoDados(
-            titulo = nome,              // Usamos o nome como ID único (titulo)
+            titulo = nome,
             nomePersonalizado = nome,
-            capaUri = null,             // Começa sem foto
-            listaFotos = emptyList()    // Lista vazia
+            capaUri = null,
+            listaFotos = emptyList()
         )
 
         colecoesAtuais.add(novaColecao)
-        _listaColecoes.value = colecoesAtuais
-        salvarColecoesNoArmazenamento(colecoesAtuais)
+        atualizarEstadosEPersistir(colecoesAtuais)
     }
 
     /**
-     * Apaga uma coleção inteira e todas as fotos contidas nela.
+     * <summary> Remove uma coleção inteira e todas as fotos nela contidas. </summary>
      */
     fun apagarColecao(colecaoParaApagar: ColecaoDados) {
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: mutableListOf()
-
-        // Remove a coleção da lista principal
         colecoesAtuais.removeAll { it.titulo == colecaoParaApagar.titulo }
-
-        // Atualiza os LiveData e salva as alterações
-        _listaColecoes.value = colecoesAtuais
-        _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
-        salvarColecoesNoArmazenamento(colecoesAtuais)
+        atualizarEstadosEPersistir(colecoesAtuais)
     }
 
-
-
     /**
-     * Renomeia uma coleção.
-     * Isto requer atualizar o 'data' (ID da coleção) em cada foto dentro dela.
+     * <summary>
+     * Renomeia uma coleção existente e atualiza o vínculo de todas as fotos internas.
+     * </summary>
      */
-    /**
-     * Renomeia uma coleção.
-     * Isto requer atualizar o 'data' (ID da coleção) em cada foto dentro dela.
-     */
-    // CORREÇÃO: O primeiro parâmetro deve ser o nome antigo da coleção (String)
     fun renomearColecao(nomeAntigoColecao: String, novoTitulo: String) {
-        if (novoTitulo.isBlank() || nomeAntigoColecao.isBlank()) return // Evita nomes vazios
-
+        if (novoTitulo.isBlank() || nomeAntigoColecao.isBlank()) return
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: return
 
-        // CORREÇÃO: A comparação aqui deve ser entre strings
-        // Verifica se o novo título já existe e não é o nome da coleção que estamos a renomear
-        if (colecoesAtuais.any { it.titulo.equals(novoTitulo, ignoreCase = true) && !it.titulo.equals(nomeAntigoColecao, ignoreCase = true) }) {
-            // Opcional: Informar o utilizador que o nome já existe
-            return
-        }
-
-        // CORREÇÃO: Usa o nome antigo para encontrar a coleção
         val indiceColecao = colecoesAtuais.indexOfFirst { it.titulo.equals(nomeAntigoColecao, ignoreCase = true) }
-        if (indiceColecao == -1) return // Coleção não encontrada
+        if (indiceColecao == -1) return
 
         val colecaoAntiga = colecoesAtuais[indiceColecao]
+        val fotosAtualizadas = colecaoAntiga.listaFotos.map { it.copy(data = novoTitulo) }
 
-        // 1. Cria uma nova lista de fotos (imutável) com o 'data' atualizado para o novo título
-        val fotosAtualizadas: List<FotoDados> = colecaoAntiga.listaFotos.map { foto ->
-            foto.copy(data = novoTitulo)
-        }
-
-        // 2. Cria uma nova coleção com o novo título e a lista de fotos atualizada
-        // CORREÇÃO: `fotosAtualizadas` já é uma List<FotoDados>, não precisa de casting.
-        // O tipo em ColecaoDados deve ser List<FotoDados> para garantir imutabilidade.
-        val colecaoNova = colecaoAntiga.copy(
+        colecoesAtuais[indiceColecao] = colecaoAntiga.copy(
             titulo = novoTitulo,
             listaFotos = fotosAtualizadas
         )
 
-        // 3. Substitui a coleção antiga pela nova na lista principal
-        colecoesAtuais[indiceColecao] = colecaoNova
-
-        // 4. Atualiza os LiveData e salva as alterações
-        _listaColecoes.value = colecoesAtuais
-        _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
-        salvarColecoesNoArmazenamento(colecoesAtuais)
+        atualizarEstadosEPersistir(colecoesAtuais)
     }
 
-
     /**
-     * Renomeia o título personalizado de uma foto.
+     * <summary> Atualiza o título personalizado de uma foto específica dentro de uma coleção. </summary>
      */
     fun renomearFoto(fotoParaRenomear: FotoDados, novoNome: String) {
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: return
-
-        // Encontra a coleção onde a foto está
         val indiceColecao = colecoesAtuais.indexOfFirst { it.titulo == fotoParaRenomear.data }
         if (indiceColecao == -1) return
 
         val colecaoAlvo = colecoesAtuais[indiceColecao]
-
-        // Encontra a foto dentro da coleção
         val indiceFoto = colecaoAlvo.listaFotos.indexOfFirst { it.uriString == fotoParaRenomear.uriString }
         if (indiceFoto == -1) return
 
-        // Cria uma cópia da foto com o nome atualizado
-        val fotoAtualizada = colecaoAlvo.listaFotos[indiceFoto].copy(tituloPersonalizado = novoNome)
-
-        // Cria uma nova lista de fotos para a coleção, substituindo a foto antiga
         val fotosNovasDaColecao = colecaoAlvo.listaFotos.toMutableList()
-        fotosNovasDaColecao[indiceFoto] = fotoAtualizada
+        fotosNovasDaColecao[indiceFoto] = colecaoAlvo.listaFotos[indiceFoto].copy(tituloPersonalizado = novoNome)
 
-        // Cria uma cópia da coleção com a lista de fotos atualizada
         colecoesAtuais[indiceColecao] = colecaoAlvo.copy(listaFotos = fotosNovasDaColecao)
-
-        // Atualiza os LiveData e salva
-        _listaColecoes.value = colecoesAtuais
-        _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
-        salvarColecoesNoArmazenamento(colecoesAtuais)
+        atualizarEstadosEPersistir(colecoesAtuais)
     }
 
     /**
-     * Move uma foto de uma coleção para outra.
-     */fun moverFotoParaColecao(fotoParaMover: FotoDados, colecaoDestino: ColecaoDados) {
+     * <summary>
+     * Move uma foto entre coleções, atualizando as capas de origem e destino se necessário.
+     * </summary>
+     */
+    fun moverFotoParaColecao(fotoParaMover: FotoDados, colecaoDestino: ColecaoDados) {
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: return
 
-        // --- Passo 1: Remover da origem ---
+        // Remover da origem
         val indiceOrigem = colecoesAtuais.indexOfFirst { it.titulo == fotoParaMover.data }
         if (indiceOrigem != -1) {
-            val colecaoOrigem = colecoesAtuais[indiceOrigem]
-            val fotosOrigemAtualizadas = colecaoOrigem.listaFotos.toMutableList()
-            fotosOrigemAtualizadas.removeAll { it.uriString == fotoParaMover.uriString }
-
-            // Se removemos a foto que era a capa, precisamos de uma nova capa ou null
-            val novaCapaOrigem = if (fotosOrigemAtualizadas.isEmpty()) null
-            else if (colecaoOrigem.capaUri == fotoParaMover.uriString) fotosOrigemAtualizadas.first().uriString
-            else colecaoOrigem.capaUri
-
-            colecoesAtuais[indiceOrigem] = colecaoOrigem.copy(
-                listaFotos = fotosOrigemAtualizadas,
-                capaUri = novaCapaOrigem
-            )
+            val colOrigem = colecoesAtuais[indiceOrigem]
+            val fotosOrigem = colOrigem.listaFotos.toMutableList().apply { removeAll { it.uriString == fotoParaMover.uriString } }
+            val novaCapa = if (fotosOrigem.isEmpty()) null else if (colOrigem.capaUri == fotoParaMover.uriString) fotosOrigem.first().uriString else colOrigem.capaUri
+            colecoesAtuais[indiceOrigem] = colOrigem.copy(listaFotos = fotosOrigem, capaUri = novaCapa)
         }
 
-        // --- Passo 2: Adicionar ao destino ---
+        // Adicionar ao destino
         val indiceDestino = colecoesAtuais.indexOfFirst { it.titulo == colecaoDestino.titulo }
         if (indiceDestino != -1) {
             val fotoMovida = fotoParaMover.copy(data = colecaoDestino.titulo)
-            val colecaoDestinoOriginal = colecoesAtuais[indiceDestino]
-            val fotosDestinoAtualizadas = colecaoDestinoOriginal.listaFotos.toMutableList()
-            fotosDestinoAtualizadas.add(fotoMovida)
-
-            // ✅ CORREÇÃO AQUI: Se a coleção destino não tinha capa, ela ganha esta foto como capa
-            val novaCapaDestino = colecaoDestinoOriginal.capaUri ?: fotoMovida.uriString
-
-            colecoesAtuais[indiceDestino] = colecaoDestinoOriginal.copy(
-                listaFotos = fotosDestinoAtualizadas,
-                capaUri = novaCapaDestino
-            )
+            val colDest = colecoesAtuais[indiceDestino]
+            val fotosDest = colDest.listaFotos.toMutableList().apply { add(fotoMovida) }
+            colecoesAtuais[indiceDestino] = colDest.copy(listaFotos = fotosDest, capaUri = colDest.capaUri ?: fotoMovida.uriString)
         }
 
-        _listaColecoes.value = colecoesAtuais.toList() // .toList() força a atualização do LiveData
-        salvarColecoesNoArmazenamento(colecoesAtuais)
+        atualizarEstadosEPersistir(colecoesAtuais)
     }
 
-    // --- Funções de Persistência (sem alterações) ---
+    /**
+     * <summary> Função auxiliar para atualizar LiveDatas e persistir dados no armazenamento local. </summary>
+     */
+    private fun atualizarEstadosEPersistir(lista: List<ColecaoDados>) {
+        _listaColecoes.value = lista.toList()
+        _listaFotos.value = lista.flatMap { it.listaFotos }
+        salvarColecoesNoArmazenamento(lista)
+    }
 
+    /**
+     * <summary> Deserializa o JSON guardado em SharedPreferences para uma lista de colecoes. </summary>
+     */
     private fun carregarColecoesDoArmazenamento(): List<ColecaoDados> {
-        val sharedPreferences = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val jsonString = sharedPreferences.getString("LISTA_COLECOES", null)
-
-        return if (jsonString != null) {
+        val sharedPrefs = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
+        val json = sharedPrefs.getString("LISTA_COLECOES", null) ?: return emptyList()
+        return try {
             val type = object : TypeToken<List<ColecaoDados>>() {}.type
-            try {
-                gson.fromJson(jsonString, type) ?: emptyList()
-            } catch (e: Exception) {
-                // Em caso de erro na deserialização, retorna uma lista vazia para evitar crash
-                emptyList()
-            }
-        } else {
-            emptyList()
-        }
+            Gson().fromJson(json, type)
+        } catch (e: Exception) { emptyList() }
     }
 
+    /**
+     * <summary> Serializa a lista de coleções para JSON e guarda permanentemente no dispositivo. </summary>
+     */
     private fun salvarColecoesNoArmazenamento(colecoes: List<ColecaoDados>) {
-        val sharedPreferences = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val gson = Gson()
-        val jsonString = gson.toJson(colecoes)
-        editor.putString("LISTA_COLECOES", jsonString)
-        editor.apply()
+        val sharedPrefs = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
+        sharedPrefs.edit().putString("LISTA_COLECOES", Gson().toJson(colecoes)).apply()
     }
 
-    // Dentro do teu PartilhaDadosViewModel.kt, adiciona esta função:
-
+    /**
+     * <summary> Sincroniza os dados da interface com o que está guardado no disco. </summary>
+     */
     fun recarregarDados() {
-        val colecoesDoDisco = carregarColecoesDoArmazenamento()
-        // Ao atribuir uma lista nova, o LiveData dispara obrigatoriamente
-        _listaColecoes.value = colecoesDoDisco.toList()
-        _listaFotos.value = colecoesDoDisco.flatMap { it.listaFotos }
+        val doDisco = carregarColecoesDoArmazenamento()
+        _listaColecoes.value = doDisco.toList()
+        _listaFotos.value = doDisco.flatMap { it.listaFotos }
     }
 }

@@ -24,11 +24,22 @@ import java.io.IOException
 import androidx.fragment.app.activityViewModels
 import java.util.Locale
 
+/**
+ * <summary>
+ * Fragmento responsável por fazer a lista e gerir as coleções de fotos.
+ * Permite visualizar, criar, apagar e renomear coleções (manualmente ou via Geocoder).
+ * </summary>
+ */
 class ColecoesFragmento : Fragment() {
 
     private val viewModel: PartilhaDadosViewModel by activityViewModels()
     private lateinit var adapter: ColecoesAdapter
 
+    /**
+     * <summary>
+     * Força a atualização dos dados sempre que o fragmento volta ao primeiro plano.
+     * </summary>
+     */
     override fun onResume() {
         super.onResume()
         viewModel.recarregarDados()
@@ -38,24 +49,31 @@ class ColecoesFragmento : Fragment() {
         return inflater.inflate(R.layout.fragment_colecoes, container, false)
     }
 
+    /**
+     * <summary>
+     * Inicializa a interface, configura a RecyclerView em grelha (grid) e observa as mudanças no ViewModel.
+     * </summary>
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Configura o Floating Action Button para criar novas coleções
         val fab: View = view.findViewById(R.id.fabAddColecao)
         fab.setOnClickListener {
             mostrarDialogoCriarColecao()
         }
+
+        // Configura a RecyclerView com 2 colunas
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerColecoes)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         adapter = ColecoesAdapter(
             emptyList(),
             onItemClick = { colecaoClicada ->
+                //  Navega para os detalhes da coleção ao clicar
                 val intent = Intent(requireContext(), DetalheColecaoActivity::class.java)
                 intent.putExtra("NOME_COLECAO", colecaoClicada.nomePersonalizado ?: colecaoClicada.titulo)
                 intent.putExtra("TITULO_COLECAO", colecaoClicada.titulo)
-
-
-
                 startActivity(intent)
             },
             onOptionsMenuClick = { viewAnchor, colecao ->
@@ -64,6 +82,7 @@ class ColecoesFragmento : Fragment() {
         )
         recyclerView.adapter = adapter
 
+        // Observa a lista de coleções e atualiza o adapter em tempo real
         viewModel.listaColecoes.observe(viewLifecycleOwner, Observer { listaDeColecoes ->
             if (listaDeColecoes != null) {
                 adapter.atualizarLista(listaDeColecoes.reversed())
@@ -72,13 +91,12 @@ class ColecoesFragmento : Fragment() {
     }
 
     /**
-     * Mostra o menu pop-up com as opções para uma coleção (ex: Renomear, Apagar).
+     * <summary>
+     * Exibe um PopupMenu com ações rápidas para a coleção selecionada.
+     * </summary>
      */
-
-// você decide qual menu carregar
     private fun mostrarMenuOpcoes(view: View, colecao: ColecaoDados) {
         val popup = PopupMenu(requireContext(), view)
-        //decidir qual menu inflar
         popup.menuInflater.inflate(R.menu.menu_colecao, popup.menu)
 
         popup.setOnMenuItemClickListener { menuItem ->
@@ -102,7 +120,9 @@ class ColecoesFragmento : Fragment() {
     }
 
     /**
-     * Mostra a caixa de diálogo para o utilizador inserir um novo nome para a coleção.
+     * <summary>
+     * Abre um diálogo com um campo de texto para renomear manualmente a coleção.
+     * </summary>
      */
     private fun mostrarDialogoRenomear(colecao: ColecaoDados) {
         val builder = AlertDialog.Builder(requireContext())
@@ -124,19 +144,26 @@ class ColecoesFragmento : Fragment() {
     }
 
     /**
-     * Mostra um diálogo de confirmação antes de apagar uma coleção.
+     * <summary>
+     * Solicita confirmação antes de apagar definitivamente uma coleção .
+     * </summary>
      */
     private fun mostrarDialogoConfirmacaoApagar(colecao: ColecaoDados) {
         AlertDialog.Builder(requireContext())
             .setTitle("Apagar Coleção")
             .setMessage("Tem a certeza que quer apagar permanentemente esta coleção e todas as fotos?")
             .setPositiveButton("Apagar") { _, _ ->
-                // Se o utilizador confirmar, chama a função no ViewModel
                 viewModel.apagarColecao(colecao)
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
+
+    /**
+     * <summary>
+     * Diálogo para criação de uma nova coleção vazia.
+     * </summary>
+     */
     private fun mostrarDialogoCriarColecao() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Nova Coleção")
@@ -157,9 +184,13 @@ class ColecoesFragmento : Fragment() {
         builder.show()
     }
 
-
+    /**
+     * <summary>
+     *  Calcula a média das coordenadas das fotos na coleção
+     * e utiliza o Geocoder para converter em nome de cidade/localidade.
+     * </summary>
+     */
     private fun renomearComLocalizacao(colecao: ColecaoDados) {
-        // Filtra apenas as fotos que têm coordenadas válidas
         val fotosComGps = colecao.listaFotos.filter { it.latitude != null && it.longitude != null }
 
         if (fotosComGps.isEmpty()) {
@@ -167,22 +198,19 @@ class ColecoesFragmento : Fragment() {
             return
         }
 
-        // Calcula a média da latitude e da longitude
+        // <summary> Obtém o centro geográfico da coleção </summary>
         val latMedia = fotosComGps.map { it.latitude!! }.average()
         val lonMedia = fotosComGps.map { it.longitude!! }.average()
 
         try {
-            // Usa o Geocoder para obter o endereço a partir das coordenadas
-            val geocoder =
-                Geocoder(requireContext(), Locale.getDefault())
+            // <summary> Tenta obter o nome da localidade via serviço de sistema (Geocoder) </summary>
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
             val enderecos = geocoder.getFromLocation(latMedia, lonMedia, 1)
 
             if (enderecos != null && enderecos.isNotEmpty()) {
                 val endereco = enderecos[0]
-                // Constrói um nome de local
                 val nomeDoLocal = endereco.locality ?: endereco.subAdminArea ?: "Localização desconhecida"
 
-                // Mostra um Toast para feedback e chama o ViewModel para guardar
                 Toast.makeText(context, "Coleção renomeada para: $nomeDoLocal", Toast.LENGTH_LONG).show()
                 viewModel.renomearColecao(colecao.titulo, nomeDoLocal)
             } else {

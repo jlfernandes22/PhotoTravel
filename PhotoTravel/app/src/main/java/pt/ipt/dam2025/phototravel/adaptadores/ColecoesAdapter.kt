@@ -1,6 +1,5 @@
 package pt.ipt.dam2025.phototravel.adaptadores
 
-import android.content.Intent // <-- ERRO 1 CORRIGIDO: Importar Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +10,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
-import pt.ipt.dam2025.phototravel.DetalheColecaoActivity // <-- ERRO 2 CORRIGIDO: Importar a sua atividade
 
+/**
+ * <summary>
+ * Adapter para a RecyclerView das Coleções.
+ * Responsável por converter a lista de coleções [ColecaoDados] em itens visuais na interface.
+ * </summary>
+ */
 class ColecoesAdapter(
     private var colecoes: List<ColecaoDados>,
     private val onItemClick: (ColecaoDados) -> Unit,
     private val onOptionsMenuClick: (View, ColecaoDados) -> Unit
 ) : RecyclerView.Adapter<ColecoesAdapter.ViewHolder>() {
 
+    /**
+     * <summary>
+     * ViewHolder que mapeia os componentes de interface definidos no XML item_colecao.
+     * </summary>
+     */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.colecaoImagens)
         val titulo: TextView = view.findViewById(R.id.tituloColecao)
@@ -26,36 +35,40 @@ class ColecoesAdapter(
         val opcoesButton: ImageButton = view.findViewById(R.id.opcoes_colecao_button)
     }
 
+    /**
+     * <summary>
+     * Infla o layout XML para cada item da lista e cria a instância do ViewHolder.
+     * </summary>
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_colecao, parent, false)
         return ViewHolder(view)
     }
+
+    /**
+     * <summary>
+     * Vincula os dados ColecaoDados aos elementos visuais (TextViews, ImageView).
+     * Controla também a lógica de exibição da imagem da capa da coleção e eventos de clicar.
+     * </summary>
+     */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = colecoes[position]
 
+        //  Define o título da coleção priorizando o nome personalizado
         holder.titulo.text = item.nomePersonalizado ?: item.titulo
-            holder.data.text = "${item.listaFotos.size} fotos"
 
-            // ✅ Forçar limpeza/atualização da imagem
-            holder.image.setImageDrawable(null) // Limpa o cache visual anterior
-
-        if (!item.capaUri.isNullOrEmpty()) {
-            holder.image.setImageURI(Uri.parse(item.capaUri))
-        } else {
-            holder.image.setImageResource(android.R.drawable.ic_menu_gallery)
-        }
-        // Isto já irá mostrar "0 fotos" automaticamente se a lista estiver vazia
+        // Atualiza a contagem de fotos
         val numeroDeFotos = item.listaFotos.size
         holder.data.text = "$numeroDeFotos fotos"
 
-        // ✅ Lógica para a imagem de capa
+        // Limpeza preventiva
+        holder.image.setImageDrawable(null)
+
+        // Lógica para carregar a imagem de capa ou a padrão
         if (item.listaFotos.isEmpty()) {
-            // Se não há fotos, mostra um ícone de "álbum vazio" ou limpa a imagem
-            holder.image.setImageResource(android.R.drawable.ic_menu_gallery) // Ícone padrão do Android
-            // Ou podes usar um drawable teu: holder.image.setImageResource(R.drawable.placeholder_vazio)
+            holder.image.setImageResource(android.R.drawable.ic_menu_gallery)
         } else {
             try {
-                // Se houver fotos, tenta carregar a capa definida
                 val uri = Uri.parse(item.capaUri)
                 holder.image.setImageURI(uri)
             } catch (e: Exception) {
@@ -63,6 +76,7 @@ class ColecoesAdapter(
             }
         }
 
+        //  Configuração dos listeners de clicar
         holder.itemView.setOnClickListener {
             onItemClick(item)
         }
@@ -72,8 +86,17 @@ class ColecoesAdapter(
         }
     }
 
+    /**
+     * <summary> Retorna o tamanho total da lista de coleções </summary>
+     */
     override fun getItemCount() = colecoes.size
 
+    /**
+     * <summary>
+     * Atualiza a lista interna do adapter e notifica a RecyclerView para redesenhar.
+     * </summary>
+     * <param name="novaLista">A nova lista de coleções a ser exibida</param>
+     */
     fun atualizarLista(novaLista: List<ColecaoDados>) {
         colecoes = novaLista
         notifyDataSetChanged()

@@ -21,16 +21,32 @@
           <theme>@style/Theme.TravelPhoto</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml">
+        <config>
+          <theme>@style/Theme.TravelPhoto</theme>
+        </config>
+      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="27d177ec-7b1f-413e-b847-9978804d75d8" name="Changes" comment="">
+    <list default="true" id="27d177ec-7b1f-413e-b847-9978804d75d8" name="Changes" comment="modo escuro e modo claro">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/DetalheColecaoActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/DetalheColecaoActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/VerFotoActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/VerFotoActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/adaptadores/ColecoesAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/adaptadores/ColecoesAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/adaptadores/FotosAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/adaptadores/FotosAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/fragmentos/CamaraFragmento.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/fragmentos/CamaraFragmento.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/fragmentos/ColecoesFragmento.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/fragmentos/ColecoesFragmento.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/modelos/ColecaoDados.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/modelos/ColecaoDados.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/LoginActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/LoginActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/RegistarActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/RegistarActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/viewmodel/PartilhaDadosViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/viewmodel/PartilhaDadosViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_registar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_registar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +96,7 @@
 }</component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.13-bin/5xuhj0ry160q40clulazy9h7d/gradle-8.13" javaHome="$APPLICATION_HOME_DIR$/jbr/Contents/Home" gradleVersion="8.13" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="_Designer_Tab" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -191,7 +207,20 @@
       <option name="presentableId" value="Default" />
       <updated>1768944220953</updated>
     </task>
+    <task id="LOCAL-00001" summary="modo escuro e modo claro">
+      <option name="closed" value="true" />
+      <created>1769177391915</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1769177391915</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="modo escuro e modo claro" />
+    <option name="LAST_COMMIT_MESSAGE" value="modo escuro e modo claro" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

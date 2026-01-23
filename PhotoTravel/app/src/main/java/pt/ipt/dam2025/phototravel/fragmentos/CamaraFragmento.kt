@@ -35,6 +35,12 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+/**
+ * <summary>
+ * Fragmento responsável pela funcionalidade de tirar fotos.
+ * Gere o ciclo de vida da câmara (CameraX) e a obtenção de coordenadas GPS.
+ * </summary>
+ */
 class CamaraFragmento : Fragment() {
 
     private var imageCapture: ImageCapture? = null
@@ -44,6 +50,11 @@ class CamaraFragmento : Fragment() {
     private var ultimaLocal: Location? = null
     private var gpsDialogJaSolicitado = false
 
+    /**
+     * <summary>
+     *receber atualizações de localização em tempo real.
+     * </summary>
+     */
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             ultimaLocal = result.lastLocation
@@ -51,6 +62,11 @@ class CamaraFragmento : Fragment() {
         }
     }
 
+    /**
+     * <summary>
+     * Trata o resultado do pedido para ativar o GPS por parte do utilizador.
+     * </summary>
+     */
     private val gpsAtivo = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
         if (it.resultCode == android.app.Activity.RESULT_OK) {
             rastrearGPS()
@@ -59,6 +75,11 @@ class CamaraFragmento : Fragment() {
         }
     }
 
+    /**
+     * <summary>
+     * Gere as respostas aos pedidos de permissão de Câmara e Localização.
+     * </summary>
+     */
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         if (permissions[Manifest.permission.CAMERA] == true) {
             iniciarCamara()
@@ -74,6 +95,11 @@ class CamaraFragmento : Fragment() {
         return inflater.inflate(R.layout.fragment_camara, container, false)
     }
 
+    /**
+     * <summary>
+     * Inicializa os componentes principais e dispara a verificação de permissões ao criar a view
+     * </summary>
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -81,11 +107,14 @@ class CamaraFragmento : Fragment() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // --- CORREÇÃO PRINCIPAL: PEDIR PERMISSÕES AQUI, UMA SÓ VEZ ---
         verificarPermissoes()
     }
 
-    // --- FUNÇÃO RENOMEADA E CORRIGIDA ---
+    /**
+     * <summary>
+     * Centraliza a lógica de verificação e pedido de múltiplas permissões.
+     * </summary>
+     */
     private fun verificarPermissoes() {
         val cameraGranted = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
         val locationGranted = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -97,24 +126,28 @@ class CamaraFragmento : Fragment() {
         if (permissionsToRequest.isNotEmpty()) {
             requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
         } else {
-            // Se já temos as permissões, podemos iniciar tudo
             iniciarCamara()
             verificarGpsRastrear()
         }
     }
 
-    // A função onResume agora é muito mais simples
+    /**
+     * <summary>
+     * Garante que a câmara é reiniciada quando o fragmento volta a estar visível.
+     * </summary>
+     */
     override fun onResume() {
         super.onResume()
-        // Se já temos permissão da câmara, reinicia a pré-visualização.
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             iniciarCamara()
         }
     }
 
-    // O resto das suas funções (tirarFoto, iniciarCamara, etc.) estão corretas e podem ser mantidas como estão.
-    // ... (mantenha o resto do seu código a partir daqui)
-
+    /**
+     * <summary>
+     * Configura a CameraX para vincular a pré-visualização ao PreviewView do layout.
+     * </summary>
+     */
     private fun iniciarCamara() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener({
@@ -133,6 +166,11 @@ class CamaraFragmento : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    /**
+     * <summary>
+     * Liberta o fornecedor da câmara para evitar conflitos com outros fragmentos ou apps.
+     * </summary>
+     */
     private fun desativarCamara() {
         if(::cameraExecutor.isInitialized && !cameraExecutor.isShutdown){
             val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -155,10 +193,16 @@ class CamaraFragmento : Fragment() {
         }
     }
 
+    /**
+     * <summary>
+     * tira foto e guarda-a no armazenamento público e notifica o ViewModel.
+     * </summary>
+     */
     private fun tirarFoto() {
         val imageCapture = imageCapture ?: return
         val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US).format(System.currentTimeMillis())
         val dataDia = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(System.currentTimeMillis())
+
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
@@ -166,6 +210,7 @@ class CamaraFragmento : Fragment() {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/PhotoTravel")
             }
         }
+
         val outputOptions = ImageCapture.OutputFileOptions.Builder(
             requireContext().contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -180,11 +225,8 @@ class CamaraFragmento : Fragment() {
                     Toast.makeText(requireContext(), "Erro ao guardar a foto.", Toast.LENGTH_SHORT).show()
                 }
 
-                // Dentro de onImageSaved
-
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val uri = output.savedUri ?: return
-
                     val novaFoto = FotoDados(
                         uriString = uri.toString(),
                         titulo = name,
@@ -193,21 +235,17 @@ class CamaraFragmento : Fragment() {
                         longitude = ultimaLocal?.longitude,
                         tituloPersonalizado = null
                     )
-
-
-                    try {
-                        viewModel.adicionarFoto(novaFoto)
-                    } catch (e: Exception) {
-                    }
-
-                    val msg = if (ultimaLocal != null) "Foto guardada com localização!" else "Foto guardada (sem GPS)."
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    viewModel.adicionarFoto(novaFoto)
                 }
-
             }
         )
     }
 
+    /**
+     * <summary>
+     * Inicia o pedido de atualizações de localização caso a permissão tenha sido concedida.
+     * </summary>
+     */
     private fun rastrearGPS() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return
         try {
@@ -223,6 +261,11 @@ class CamaraFragmento : Fragment() {
         }
     }
 
+    /**
+     * <summary>
+     * Verifica se as definições de localização do dispositivo estão adequadas ao pedido de alta precisão.
+     * </summary>
+     */
     private fun verificarGpsRastrear() {
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).build()
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)

@@ -13,7 +13,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="20dp"
-        android:src="@mipmap/logo_removebg"
+        android:src="@mipmap/logo"
         android:background="@android:color/transparent" />
     <TextView
         android:layout_width="wrap_content"
