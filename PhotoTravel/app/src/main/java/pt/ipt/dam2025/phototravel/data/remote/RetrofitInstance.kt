@@ -26,8 +26,8 @@ object RetrofitInstance {
     // 3. Criar o Retrofit
     val api: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl("http://85.139.75.43:25979/") //servidor
-            //.baseUrl("http://10.81.18.228:25979/") //local
+            //.baseUrl("http://85.139.75.43:25979/") //servidor
+            .baseUrl("http://10.81.18.228:25979/") //local
             .client(client) // <-- IMPORTANTE: Adicionar o cliente aqui
             .addConverterFactory(GsonConverterFactory.create())
             .build()

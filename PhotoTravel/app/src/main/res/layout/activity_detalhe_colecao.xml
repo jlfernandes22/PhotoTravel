@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000"
+    android:background="?attr/colorSurface"
     tools:context=".DetalheColecaoActivity">
 
     <TextView
         android:id="@+id/txtTituloAlbum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Data do Álbum"
-        android:textColor="#FFFFFF"
+        android:text="Título do Álbum"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="24sp"
         android:padding="16dp"
         android:textStyle="bold"/>

@@ -5,10 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="?attr/colorSurface"
     tools:context=".VerFotoActivity">
 
-    <!-- ImageView para mostrar a foto em ecrã inteiro -->
     <ImageView
         android:id="@+id/imagem_ecra_cheio"
         android:layout_width="0dp"
@@ -17,14 +16,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/foto_em_ecra_cheio" />
-
-    <!-- Barra de ferramentas (menu) na parte superior -->
+        android:contentDescription="@string/foto_em_ecra_cheio"
+        android:scaleType="fitCenter" />
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="?attr/colorSurface"
         app:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +32,9 @@
             android:id="@+id/toolbar_ver_foto"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="" />
+            app:title=""
+            app:titleTextColor="?attr/colorOnSurface"
+            app:navigationIconTint="?attr/colorOnSurface" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

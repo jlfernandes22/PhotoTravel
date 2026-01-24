@@ -32,7 +32,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="@string/e_mail"
-        app:startIconDrawable="@android:drawable/ic_dialog_email">
+        app:startIconDrawable="@android:drawable/ic_dialog_email"
+        app:startIconTint="?attr/colorOnSurfaceVariant"
+        app:hintTextColor="?attr/colorPrimary"
+        app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailRegistarEditText"
@@ -49,7 +52,11 @@
         android:layout_marginBottom="16dp"
         android:hint="@string/password"
         app:passwordToggleEnabled="true"
-        app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
+        app:passwordToggleTint="?attr/colorOnSurfaceVariant"
+        app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+        app:startIconTint="?attr/colorOnSurfaceVariant"
+        app:hintTextColor="?attr/colorPrimary"
+        app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordRegistarEditText"
@@ -66,7 +73,11 @@
         android:layout_marginBottom="24dp"
         android:hint="@string/confirmar_password"
         app:passwordToggleEnabled="true"
-        app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
+        app:passwordToggleTint="?attr/colorOnSurfaceVariant"
+        app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+        app:startIconTint="?attr/colorOnSurfaceVariant"
+        app:hintTextColor="?attr/colorPrimary"
+        app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordRegistar2EditText"
@@ -84,6 +95,7 @@
         android:textAllCaps="false"
         android:textSize="16sp"
         android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
         app:cornerRadius="8dp" />
 
     <LinearLayout
@@ -91,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"

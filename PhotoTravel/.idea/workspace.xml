@@ -5,6 +5,11 @@
       <config />
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_detalhe_colecao.xml">
+        <config>
+          <theme>@style/Theme.TravelPhoto</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml">
         <config>
           <theme>@style/Theme.TravelPhoto</theme>
@@ -20,6 +25,16 @@
           <theme>@style/Theme.TravelPhoto</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragmento_sobre.xml">
+        <config>
+          <theme>@style/Theme.TravelPhoto</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/item_colecao.xml">
+        <config>
+          <theme>@style/Theme.TravelPhoto</theme>
+        </config>
+      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
@@ -27,16 +42,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="27d177ec-7b1f-413e-b847-9978804d75d8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/SobreActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragmento_sobre.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/adaptadores/FotosAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/adaptadores/FotosAdapter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/ApiService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/ApiService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/RetrofitInstance.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/RetrofitInstance.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/fragmentos/ColecoesFragmento.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/fragmentos/ColecoesFragmento.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/modelos/ColecaoDados.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/modelos/ColecaoDados.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/modelos/FotoDados.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/modelos/FotoDados.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/viewmodel/PartilhaDadosViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/viewmodel/PartilhaDadosViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/LoginActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/LoginActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_detalhe_colecao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_detalhe_colecao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_registar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_registar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_ver_foto.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_ver_foto.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_colecao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_colecao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,8 +90,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Kotlin File" />
+        <option value="layoutResourceFile" />
+        <option value="Class" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -124,6 +144,11 @@
     "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="pt.ipt.dam2025.phototravel.ui" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="PhotoTravel.app" />
@@ -213,12 +238,12 @@
       <map>
         <entry key="pt.ipt.dam2025.phototravel">
           <value>
-            <CheckInfo lastCheckTimestamp="1769119635852" />
+            <CheckInfo lastCheckTimestamp="1769257462643" />
           </value>
         </entry>
         <entry key="pt.ipt.dam2025.phototravel.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1769119635851" />
+            <CheckInfo lastCheckTimestamp="1769257462643" />
           </value>
         </entry>
       </map>

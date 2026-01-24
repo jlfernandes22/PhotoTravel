@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -59,6 +60,12 @@ class LoginActivity : AppCompatActivity() {
 
         registarButton.setOnClickListener {
             val intent = Intent(this, RegistarActivity::class.java)
+            startActivity(intent)
+        }
+
+        val btnSobre = findViewById<ImageButton>(R.id.btnSobreLogin)
+        btnSobre.setOnClickListener {
+            val intent = Intent(this, SobreActivity::class.java)
             startActivity(intent)
         }
     }

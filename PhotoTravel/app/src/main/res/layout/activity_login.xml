@@ -8,6 +8,21 @@
     android:padding="32dp"
     android:background="?attr/colorSurface">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+
+        <ImageButton
+            android:id="@+id/btnSobreLogin"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/janelaSobre"
+            app:tint="?attr/colorOnSurface" />
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/logoApp"
         android:layout_width="120dp"
