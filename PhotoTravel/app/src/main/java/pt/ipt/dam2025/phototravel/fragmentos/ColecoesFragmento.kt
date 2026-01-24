@@ -35,15 +35,6 @@ class ColecoesFragmento : Fragment() {
     private val viewModel: PartilhaDadosViewModel by activityViewModels()
     private lateinit var adapter: ColecoesAdapter
 
-    /**
-     * <summary>
-     * Força a atualização dos dados sempre que o fragmento volta ao primeiro plano.
-     * </summary>
-     */
-    override fun onResume() {
-        super.onResume()
-        viewModel.recarregarDados()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_colecoes, container, false)
@@ -81,8 +72,7 @@ class ColecoesFragmento : Fragment() {
             }
         )
         recyclerView.adapter = adapter
-
-        // Observa a lista de coleções e atualiza o adapter em tempo real
+        viewModel.sincronizarDados(requireContext())
         viewModel.listaColecoes.observe(viewLifecycleOwner, Observer { listaDeColecoes ->
             if (listaDeColecoes != null) {
                 adapter.atualizarLista(listaDeColecoes.reversed())
@@ -135,7 +125,7 @@ class ColecoesFragmento : Fragment() {
         builder.setPositiveButton("Guardar") { dialog, _ ->
             val novoNome = input.text.toString()
             if (novoNome.isNotBlank()) {
-                viewModel.renomearColecao(colecao.titulo, novoNome)
+                viewModel.renomearColecao(colecao.titulo ?: "", novoNome)
             }
             dialog.dismiss()
         }
@@ -212,7 +202,7 @@ class ColecoesFragmento : Fragment() {
                 val nomeDoLocal = endereco.locality ?: endereco.subAdminArea ?: "Localização desconhecida"
 
                 Toast.makeText(context, "Coleção renomeada para: $nomeDoLocal", Toast.LENGTH_LONG).show()
-                viewModel.renomearColecao(colecao.titulo, nomeDoLocal)
+                viewModel.renomearColecao(colecao.titulo ?: "", nomeDoLocal)
             } else {
                 Toast.makeText(context, "Não foi possível encontrar um nome para esta localização.", Toast.LENGTH_SHORT).show()
             }

@@ -15,4 +15,18 @@
     <string name="criar_conta">Criar Conta</string>
     <string name="j_criou_uma_conta">Já criou uma conta?</string>
     <string name="iniciar_sess_o_aqui">Iniciar sessão aqui</string>
+    <string name="tecnologias_e_creditos_texto"><![CDATA[• Retrofit & OkHttp (Comunicação API)\n• Gson (Parsing JSON)\n• Coil (Carregamento de Imagens)\n• MapLibre (Mapas OpenSource)\n• Google Play Services (Localização)\n• AndroidX CameraX (Câmara)\n\nBaseado nos exemplos das aulas de DAM.]]></string>
+    <string name="tecnologias_e_creditos_titulo"><![CDATA[Tecnologias & Créditos]]></string>
+    <string name="jose_nome">José Luís Fernandes</string>
+    <string name="jose_numero">Nº25979</string>
+    <string name="angela_nome">Ângela Carolina Sebastião</string>
+    <string name="angela_numero">Nº25946</string>
+    <string name="foto_aluno2">foto_aluno2</string>
+    <string name="autores_titulo">Autores</string>
+    <string name="ano_letivo_2025_26">Ano Letivo 2025/26</string>
+    <string name="desenvolvimento_aplicacoes">Desenv. de Aplicações Móveis</string>
+    <string name="licenciatura">Licenciatura em Eng. Informática</string>
+    <string name="iptlogo">Logotipo</string>
+    <string name="foto_aluno1">foto_aluno1</string>
+    <string name="janelaSobre">Sobre a Aplicação</string>
 </resources>

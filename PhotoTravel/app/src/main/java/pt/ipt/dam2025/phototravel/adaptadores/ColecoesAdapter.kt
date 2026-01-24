@@ -1,5 +1,6 @@
 package pt.ipt.dam2025.phototravel.adaptadores
 
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,10 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
+import pt.ipt.dam2025.phototravel.DetalheColecaoActivity
 
 /**
  * <summary>
@@ -44,8 +47,8 @@ class ColecoesAdapter(
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_colecao, parent, false)
         return ViewHolder(view)
     }
-
-    /**
+    
+     /**
      * <summary>
      * Vincula os dados ColecaoDados aos elementos visuais (TextViews, ImageView).
      * Controla também a lógica de exibição da imagem da capa da coleção e eventos de clicar.
@@ -54,25 +57,31 @@ class ColecoesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = colecoes[position]
 
-        //  Define o título da coleção priorizando o nome personalizado
-        holder.titulo.text = item.nomePersonalizado ?: item.titulo
+        // 1. Tratamento do Título (Fallback para "Sem Título")
+        val tituloExibicao = item.nomePersonalizado ?: item.titulo
+        holder.titulo.text = if (tituloExibicao.isNullOrBlank()) "Sem Título" else tituloExibicao
 
-        // Atualiza a contagem de fotos
+        // 2. Tratamento da Quantidade de Fotos
         val numeroDeFotos = item.listaFotos.size
         holder.data.text = "$numeroDeFotos fotos"
 
-        // Limpeza preventiva
-        holder.image.setImageDrawable(null)
-
-        // Lógica para carregar a imagem de capa ou a padrão
-        if (item.listaFotos.isEmpty()) {
-            holder.image.setImageResource(android.R.drawable.ic_menu_gallery)
+        // 3. Carregamento da Imagem usando Coil (suporta URIs locais e Base64)
+        if (!item.capaUri.isNullOrEmpty()) {
+            holder.image.load(item.capaUri) {
+                crossfade(true)
+                placeholder(android.R.drawable.ic_menu_gallery)
+                error(android.R.drawable.ic_menu_report_image)
+            }
         } else {
-            try {
-                val uri = Uri.parse(item.capaUri)
-                holder.image.setImageURI(uri)
-            } catch (e: Exception) {
-                holder.image.setImageResource(android.R.drawable.ic_menu_report_image)
+            // Fallback se não houver capa: tenta usar a primeira foto ou ícone padrão
+            val primeiraFoto = item.listaFotos.firstOrNull()?.uriString
+            if (!primeiraFoto.isNullOrEmpty()) {
+                holder.image.load(primeiraFoto) {
+                    crossfade(true)
+                    placeholder(android.R.drawable.ic_menu_gallery)
+                }
+            } else {
+                holder.image.setImageResource(android.R.drawable.ic_menu_gallery)
             }
         }
 
