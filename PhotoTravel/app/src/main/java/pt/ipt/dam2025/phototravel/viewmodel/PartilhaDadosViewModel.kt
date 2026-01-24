@@ -33,9 +33,14 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
     val listaFotos: LiveData<List<FotoDados>> get() = _listaFotos
 
     init {
-        val colecoesIniciais = carregarColecoesDoArmazenamento()
-        _listaColecoes.value = colecoesIniciais
-        _listaFotos.value = colecoesIniciais.flatMap { it.listaFotos }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val colecoesIniciais = carregarColecoesDoArmazenamento()
+            withContext(Dispatchers.Main) {
+                _listaColecoes.value = colecoesIniciais
+                _listaFotos.value = colecoesIniciais.flatMap { it.listaFotos }
+            }
+        }
     }
 
     // ----------------------------------------------------------------------------------
@@ -332,37 +337,90 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
         } catch (e: Exception) { null }
     }
 
-    // ... Mantém apagarColecao, criarColecaoVazia, renomearColecao, moverFotoParaColecao, renomearFoto, apagarFoto, recarregarDados ...
+    /**
+     * Corre em background
+     */
     fun recarregarDados() {
-        val colecoesDoDisco = carregarColecoesDoArmazenamento()
-        _listaColecoes.value = colecoesDoDisco.toList()
-        _listaFotos.value = colecoesDoDisco.flatMap { it.listaFotos }
+        viewModelScope.launch(Dispatchers.IO) {
+            val colecoesDoDisco = carregarColecoesDoArmazenamento()
+
+            // Volta à thread principal apenas para atualizar o ecrã
+            withContext(Dispatchers.Main) {
+                _listaColecoes.value = colecoesDoDisco.toList()
+                _listaFotos.value = colecoesDoDisco.flatMap { it.listaFotos }
+            }
+        }
     }
+    /**
+     * Lê o JSON guardado nas SharedPreferences.
+     * Pode ser chamada diretamente dentro de um contexto IO.
+     */
     private fun carregarColecoesDoArmazenamento(): List<ColecaoDados> {
         val sharedPreferences = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
         val jsonString = sharedPreferences.getString("LISTA_COLECOES", null)
+
         return if (jsonString != null) {
             val type = object : TypeToken<List<ColecaoDados>>() {}.type
-            try { gson.fromJson(jsonString, type) ?: emptyList() } catch (e: Exception) { emptyList() }
-        } else { emptyList() }
+            try {
+                gson.fromJson(jsonString, type) ?: emptyList()
+            } catch (e: Exception) {
+                emptyList()
+            }
+        } else {
+            emptyList()
+        }
     }
     private fun salvarColecoesNoArmazenamento(colecoes: List<ColecaoDados>) {
-        val sharedPreferences = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val gson = Gson()
-        val jsonString = gson.toJson(colecoes)
-        editor.putString("LISTA_COLECOES", jsonString)
-        editor.apply()
+        viewModelScope.launch(Dispatchers.IO) {
+            val sharedPreferences = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            val gson = Gson()
+            val jsonString = gson.toJson(colecoes)
+            editor.putString("LISTA_COLECOES", jsonString)
+            editor.commit() // commit() é síncrono, mas como estamos em Dispatchers.IO, é seguro e garante escrita.
+        }
     }
 
     // Funções de gestão
     fun apagarColecao(colecaoParaApagar: ColecaoDados) {
-        val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: mutableListOf()
-        colecoesAtuais.removeAll { it.titulo == colecaoParaApagar.titulo }
-        _listaColecoes.value = colecoesAtuais
-        _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
-        salvarColecoesNoArmazenamento(colecoesAtuais)
+        val context = getApplication<Application>().applicationContext
+
+        viewModelScope.launch {
+            // 1. Apagar do Servidor (1 pedido único)
+            if (colecaoParaApagar.id > 0) {
+                val sharedPrefs = context.getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
+                val token = sharedPrefs.getString("USER_TOKEN", null)
+
+                if (token != null) {
+                    try {
+                        // Certifica-te que tens deleteCollection no ApiService
+                        val response = RetrofitInstance.api.deleteCollection("Bearer $token", colecaoParaApagar.id)
+                        if (response.isSuccessful) {
+                            Log.d("DELETE_COL", "Coleção e fotos apagadas do servidor com sucesso.")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DELETE_COL", "Erro de rede: ${e.message}")
+                    }
+                }
+            }
+
+            // 2. Limpar tudo localmente (memória e ficheiros)
+            withContext(Dispatchers.Main) {
+                // ... (Código igual: remove da lista e apaga ficheiros file://)
+                val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: return@withContext
+                colecoesAtuais.removeAll { it.id == colecaoParaApagar.id || it.titulo == colecaoParaApagar.titulo }
+
+                // Apagar ficheiros físicos
+                colecaoParaApagar.listaFotos.forEach {
+                    if (it.uriString.startsWith("file:")) File(Uri.parse(it.uriString).path ?: "").delete()
+                }
+
+                _listaColecoes.value = colecoesAtuais
+                _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
+                salvarColecoesNoArmazenamento(colecoesAtuais)
+            }
+        }
     }
     fun criarColecaoVazia(nome: String) {
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: mutableListOf()
@@ -374,12 +432,51 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
     }
     fun renomearColecao(nomeAntigoColecao: String, novoTitulo: String) {
         if (novoTitulo.isBlank() || nomeAntigoColecao.isBlank()) return
+
         val colecoesAtuais = _listaColecoes.value?.toMutableList() ?: return
+
+        // Verifica se já existe outra com esse nome (para evitar duplicados visuais)
+        if (colecoesAtuais.any { it.titulo.equals(novoTitulo, ignoreCase = true) && !it.titulo.equals(nomeAntigoColecao, ignoreCase = true) }) return
+
         val indiceColecao = colecoesAtuais.indexOfFirst { it.titulo.equals(nomeAntigoColecao, ignoreCase = true) }
         if (indiceColecao == -1) return
+
         val colecaoAntiga = colecoesAtuais[indiceColecao]
+
+        // =================================================================================
+        // 1. ATUALIZAR NO SERVIDOR
+        // =================================================================================
+        if (colecaoAntiga.id > 0) {
+            viewModelScope.launch {
+                val sharedPrefs = getApplication<Application>().getSharedPreferences("PhotoTravelPrefs", Context.MODE_PRIVATE)
+                val token = sharedPrefs.getString("USER_TOKEN", null)
+
+                if (token != null) {
+                    try {
+                        val body = mapOf("newTitle" to novoTitulo)
+                        val response = RetrofitInstance.api.updateCollection("Bearer $token", colecaoAntiga.id, body)
+
+                        if (response.isSuccessful) {
+                            Log.d("RENAME", "Coleção renomeada no servidor com sucesso.")
+                        } else {
+                            Log.e("RENAME", "Erro ao renomear no servidor: ${response.code()}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("RENAME", "Falha de rede ao renomear: ${e.message}")
+                    }
+                }
+            }
+        }
+
+        // =================================================================================
+        // 2. ATUALIZAR LOCALMENTE
+        // =================================================================================
+
+        // Atualiza o campo 'data' nas fotos locais (que é onde a App guarda o nome do álbum)
         val fotosAtualizadas = colecaoAntiga.listaFotos.map { it.copy(data = novoTitulo) }
+
         colecoesAtuais[indiceColecao] = colecaoAntiga.copy(titulo = novoTitulo, listaFotos = fotosAtualizadas)
+
         _listaColecoes.value = colecoesAtuais
         _listaFotos.value = colecoesAtuais.flatMap { it.listaFotos }
         salvarColecoesNoArmazenamento(colecoesAtuais)

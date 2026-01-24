@@ -66,4 +66,18 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: Long
     ): Response<Unit> // Unit porque o servidor devolve apenas uma mensagem JSON, não dados
+
+    @DELETE("collections/{id}")
+    suspend fun deleteCollection(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<Unit>
+
+    @retrofit2.http.PUT("collections/{id}")
+    suspend fun updateCollection(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Body body: Map<String, String> // Vamos enviar o JSON { "newTitle": "..." }
+    ): Response<Unit>
+
 }

@@ -25,6 +25,11 @@
           <theme>@style/Theme.TravelPhoto</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_ver_foto.xml">
+        <config>
+          <theme>@style/Theme.TravelPhoto</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragmento_sobre.xml">
         <config>
           <theme>@style/Theme.TravelPhoto</theme>
@@ -42,19 +47,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="27d177ec-7b1f-413e-b847-9978804d75d8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/SobreActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragmento_sobre.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/ApiService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/ApiService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/RetrofitInstance.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/RetrofitInstance.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/LoginActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/LoginActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_detalhe_colecao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_detalhe_colecao.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_registar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_registar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_ver_foto.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_ver_foto.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_colecao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_colecao.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/viewmodel/PartilhaDadosViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/viewmodel/PartilhaDadosViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
