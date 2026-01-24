@@ -20,7 +20,7 @@ Desenvolvido no âmbito da Unidade Curricular de Desenvolvimento de Aplicações
 
     Organização por Álbuns: Visualização em grelha de todas as viagens.
 
-    Renomeação Inteligente (Geocoding): Funcionalidade exclusiva que sugere o nome do álbum com base na localização GPS das fotos (ex: renomeia automaticamente para "Paris" ou "Lisboa").
+    Renomeação Inteligente: Funcionalidade exclusiva que sugere o nome do álbum com base na data.
 
     Gestão Total: Criar, apagar e renomear coleções, com reflexo imediato no servidor.
 
