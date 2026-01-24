@@ -13,7 +13,7 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@android:drawable/ic_menu_info_details"
+        android:src="@drawable/ipt_logotipo"
         android:contentDescription="@string/iptlogo"
         android:layout_marginBottom="16dp"
         app:tint="?attr/colorPrimary"/>
@@ -77,10 +77,10 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:contentDescription="@string/foto_aluno1"
-                android:src="@android:drawable/ic_menu_camera"
+                android:src="@drawable/angela_foto"
                 android:scaleType="centerCrop"
                 android:background="?attr/colorSurfaceVariant"
-                app:tint="?attr/colorOnSurfaceVariant"/>
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,10 +107,10 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:contentDescription="@string/foto_aluno2"
-                android:src="@android:drawable/ic_menu_camera"
+                android:src="@drawable/jose_foto"
                 android:scaleType="centerCrop"
                 android:background="?attr/colorSurfaceVariant"
-                app:tint="?attr/colorOnSurfaceVariant"/>
+                />
 
             <TextView
                 android:layout_width="wrap_content"
