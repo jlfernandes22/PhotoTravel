@@ -1,75 +1,66 @@
-PhotoTravel 📸✈️
+📸 PhotoTravel - Travel with Memories
 
-Travel with memories
+PhotoTravel é uma aplicação Android nativa desenvolvida para ajudar viajantes a organizar as suas memórias. A aplicação combina fotografia, geolocalização e sincronização na nuvem para criar álbuns automáticos e permitir reviver viagens através de um mapa interativo.
 
-PhotoTravel is an Android mobile application designed to help travelers organize their memories effortlessly. It combines photography with geolocation to automatically sort photos into travel collections, allowing users to relive their trips through an interactive map and organized galleries.
+Desenvolvido no âmbito da Unidade Curricular de Desenvolvimento de Aplicações Móveis (Licenciatura em Eng. Informática - IPT).
+📱 Funcionalidades Principais
+🔐 Autenticação e Nuvem
 
-📱 Features
+    Login & Registo: Sistema seguro de autenticação com validação de e-mail e password.
 
-1. Smart Photography 📷
+    Sincronização Automática: Arquitetura Offline-First. As fotos tiradas sem internet são guardadas localmente e sincronizadas com o servidor (API REST) assim que a conexão é restabelecida.
 
-Location-Aware Camera: Takes photos with active geolocation data.
+📷 Câmara Inteligente (CameraX)
 
-Auto-Organization: Immediately after taking a photo, the app suggests:
+    Captura com GPS: A câmara integrada captura a localização exata (Latitude/Longitude) no momento da foto.
 
-Automatic Collection: Adds to a collection based on the current location (e.g., "Porto").
+    Gestão Automática: As fotos são automaticamente associadas a coleções.
 
-Date-Based: Creates a collection based on the current date.
+📂 Gestão de Coleções
 
-Custom: Create a new collection from scratch or add to an existing one.
+    Organização por Álbuns: Visualização em grelha de todas as viagens.
 
-2. Interactive Map 🌍
+    Renomeação Inteligente (Geocoding): Funcionalidade exclusiva que sugere o nome do álbum com base na localização GPS das fotos (ex: renomeia automaticamente para "Paris" ou "Lisboa").
 
-Map View: Explore your photos pinned to their real-world locations on an interactive map (similar to Instagram's photo map).
+    Gestão Total: Criar, apagar e renomear coleções, com reflexo imediato no servidor.
 
-Visual Journey: See exactly where you've been and the memories captured at each spot.
+🌍 Mapa Interativo
 
-3. Collection Management 📂
+    Mapa de Memórias: Visualização das fotos em pinos no mapa (Google Maps/MapLibre), permitindo ver exatamente onde cada memória foi capturada.
 
-Organized Galleries: View all your travel collections in a clean grid layout.
+ℹ️ Sobre e Créditos
 
-Collection Control:
+    Ecrã dedicado com informações dos autores, curso e tecnologias utilizadas.
 
-Rename: Customize collection titles.
+🛠️ Stack Tecnológica
+Android (Cliente)
 
-Lock: Secure specific collections.
+    Linguagem: Kotlin
 
-Delete: Remove unwanted collections.
+    Arquitetura: MVVM (Model-View-ViewModel) com LiveData
 
-🛠️ Tech Stack
+    Comunicação API: Retrofit 2 + OkHttp + Gson
 
-Platform: Android
+    Imagens: Coil (Carregamento assíncrono e caching)
 
-Language: Kotlin
+    Hardware:
 
-Build System: Gradle (Kotlin DSL)
+        CameraX: Gestão avançada da câmara.
 
-IDE: Android Studio
+        Google Location Services (FusedLocation): Obtenção de coordenadas GPS.
 
-🚀 Getting Started
+        Geocoder: Conversão de coordenadas em nomes de locais.
 
-Prerequisites
+    Armazenamento: SharedPreferences (Token) + Armazenamento Interno (Ficheiros).
 
-Android Studio Ladybug (or newer)
+    Assincronismo: Kotlin Coroutines.
 
-JDK 17 or newer
+Backend (Servidor)
 
-Installation
+    Runtime: Node.js
 
-Clone the repository
+    Framework: Express.js
 
-git clone [https://github.com/jlfernandes22/TravelPhoto.git](https://github.com/jlfernandes22/TravelPhoto.git)
+    Autenticação: JWT (JSON Web Tokens) + Bcrypt.js (Hashing de passwords)
 
-
-1.Open in Android Studio
-2.Open Android Studio and select Open.
-3.Navigate to the TravelPhoto folder (ensure you open the folder containing build.gradle.kts).
-4.Sync Gradle
-5.Allow Android Studio to download dependencies and sync the project.
-6.Run the App
-7.Connect an Android device or start an Emulator.
-8.Click the Run (▶️) button.
-
-🔮 Future Roadmap
-  Social Sharing: Share collections directly with friends who use the app.
-  Sorting Options: Advanced sorting for collections (by date, location, size).
+    File System: Base de dados simulada em ficheiros JSON/TXT (NoSQL approach).
