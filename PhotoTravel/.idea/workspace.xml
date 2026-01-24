@@ -47,11 +47,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="27d177ec-7b1f-413e-b847-9978804d75d8" name="Changes" comment="modo escuro e modo claro">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/logo_nobg.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/model/RegisterResponse.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/RetrofitInstance.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/data/remote/RetrofitInstance.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/RegistarActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/ipt/dam2025/phototravel/ui/RegistarActivity.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
