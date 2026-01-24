@@ -15,9 +15,18 @@ import pt.ipt.dam2025.phototravel.MainActivity
 import pt.ipt.dam2025.phototravel.R
 import androidx.core.content.edit
 
-
+/**
+ * <summary>
+ *autenticação do utilizador.
+ * </summary>
+ */
 class LoginActivity : AppCompatActivity() {
 
+    /**
+     * <summary>
+     * Inicializa a interface e configura os listeners de clique para os botões de Login e Registo.
+     * </summary>
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -27,10 +36,18 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.loginButton)
         val registarButton = findViewById<Button>(R.id.registarButton)
 
+        /**
+         * <summary>
+         * Listener do botão de Login:
+         * Recolhe os dados, valida as credenciais de forma assíncrona (Coroutines)
+         * e gere o sucesso ou falha da resposta do servidor.
+         * </summary>
+         */
         loginButton.setOnClickListener {
             val emailText = email.text.toString().trim()
             val passwordText = password.text.toString().trim()
 
+            //Executa o pedido de rede numa Coroutine ligada ao ciclo de vida da Activity
             lifecycleScope.launch {
                 try {
                     val response = RetrofitInstance.api.login(
@@ -53,11 +70,17 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Erro no login: Credenciais inválidas", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
+                    // Trata falhas de rede (ex: servidor offline ou falta de internet)
                     Toast.makeText(this@LoginActivity, "Erro de ligação: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
 
+        /**
+         * <summary>
+         * Listener para redirecionar o utilizador para o ecrã de criação de conta.
+         * </summary>
+         */
         registarButton.setOnClickListener {
             val intent = Intent(this, RegistarActivity::class.java)
             startActivity(intent)

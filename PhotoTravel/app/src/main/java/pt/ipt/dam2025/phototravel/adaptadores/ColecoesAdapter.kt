@@ -14,12 +14,23 @@ import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
 import pt.ipt.dam2025.phototravel.DetalheColecaoActivity
 
+/**
+ * <summary>
+ * Adapter para a RecyclerView das Coleções.
+ * Responsável por converter a lista de coleções [ColecaoDados] em itens visuais na interface.
+ * </summary>
+ */
 class ColecoesAdapter(
     private var colecoes: List<ColecaoDados>,
     private val onItemClick: (ColecaoDados) -> Unit,
     private val onOptionsMenuClick: (View, ColecaoDados) -> Unit
 ) : RecyclerView.Adapter<ColecoesAdapter.ViewHolder>() {
 
+    /**
+     * <summary>
+     * ViewHolder que mapeia os componentes de interface definidos no XML item_colecao.
+     * </summary>
+     */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.colecaoImagens)
         val titulo: TextView = view.findViewById(R.id.tituloColecao)
@@ -27,11 +38,22 @@ class ColecoesAdapter(
         val opcoesButton: ImageButton = view.findViewById(R.id.opcoes_colecao_button)
     }
 
+    /**
+     * <summary>
+     * Infla o layout XML para cada item da lista e cria a instância do ViewHolder.
+     * </summary>
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_colecao, parent, false)
         return ViewHolder(view)
     }
-
+    
+     /**
+     * <summary>
+     * Vincula os dados ColecaoDados aos elementos visuais (TextViews, ImageView).
+     * Controla também a lógica de exibição da imagem da capa da coleção e eventos de clicar.
+     * </summary>
+     */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = colecoes[position]
 
@@ -63,6 +85,7 @@ class ColecoesAdapter(
             }
         }
 
+        //  Configuração dos listeners de clicar
         holder.itemView.setOnClickListener {
             onItemClick(item)
         }
@@ -72,8 +95,17 @@ class ColecoesAdapter(
         }
     }
 
+    /**
+     * <summary> Retorna o tamanho total da lista de coleções </summary>
+     */
     override fun getItemCount() = colecoes.size
 
+    /**
+     * <summary>
+     * Atualiza a lista interna do adapter e notifica a RecyclerView para redesenhar.
+     * </summary>
+     * <param name="novaLista">A nova lista de coleções a ser exibida</param>
+     */
     fun atualizarLista(novaLista: List<ColecaoDados>) {
         colecoes = novaLista
         notifyDataSetChanged()

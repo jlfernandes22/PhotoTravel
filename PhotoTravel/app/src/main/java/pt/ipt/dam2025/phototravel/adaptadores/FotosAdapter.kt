@@ -10,6 +10,12 @@ import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.modelos.FotoDados
 import java.io.File
 
+/**
+ * <summary>
+ * adapter para a RecyclerView das Fotos.
+ * Gere a exibição de imagens dentro de uma coleção, utilizando a biblioteca Coil para o carregamento ser eficiente.
+ * </summary>
+ */
 class FotosAdapter(
     private var listaFotos: List<FotoDados>,
     private val onItemClick: (FotoDados) -> Unit,
@@ -20,6 +26,11 @@ class FotosAdapter(
         val imageView: ImageView = view.findViewById(R.id.imagem_item_foto)
     }
 
+    /**
+     * <summary>
+     * Infla o layout [R.layout.item_foto] para criar a visualização de cada célula da grelha/lista.
+     * </summary>
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FotoViewHolder {
         // Certifica-te que o nome do layout (item_foto.xml) está correto
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_foto, parent, false)

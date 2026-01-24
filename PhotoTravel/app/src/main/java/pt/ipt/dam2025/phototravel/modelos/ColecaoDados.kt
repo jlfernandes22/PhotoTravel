@@ -4,8 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ColecaoDados(
     val id: Int = 0,
-
-    // ✅ CORREÇÃO: O servidor envia "titulo", não "title"
+  
     @SerializedName("titulo")
     val titulo: String? = null,
 

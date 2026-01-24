@@ -19,64 +19,78 @@ import com.google.android.material.appbar.MaterialToolbar
 import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
 import pt.ipt.dam2025.phototravel.modelos.FotoDados
 import pt.ipt.dam2025.phototravel.viewmodel.PartilhaDadosViewModel
-
+/**
+ * <summary>
+ * Atividade responsável pela visualização detalhada de uma fotografia.
+ * Permite ao utilizador ver a imagem em ecrã cheio, renomear, apagar ou mover a foto para outras coleções.
+ * </summary>
+ */
 class VerFotoActivity : AppCompatActivity() {
 
     private val viewModel: PartilhaDadosViewModel by viewModels()
     private var uriDaFoto: String? = null
-    // A variável tituloOriginalDaColecao parece não estar a ser usada, pode considerar removê-la se não for necessária.
     private var tituloOriginalDaColecao: String? = null
     private var fotoAtual: FotoDados? = null
 
+    /**
+     * <summary>
+     * Inicializa a interface, carrega a imagem usando a biblioteca Coil e configura a Toolbar.
+     * Implementa um observador reativo para fechar o ecrã caso a foto seja eliminada externamente.
+     * </summary>
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ver_foto)
 
+        // Recupera os dados da Intent (Caminho da imagem e Coleção de origem)
         uriDaFoto = intent.getStringExtra("URI_DA_FOTO")
         tituloOriginalDaColecao = intent.getStringExtra("TITULO_COLECAO")
 
+        //  Configuração da Toolbar com botão de retroceder
         val toolbar: MaterialToolbar = findViewById(R.id.toolbar_ver_foto)
         setSupportActionBar(toolbar)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         val imageView: ImageView = findViewById(R.id.imagem_ecra_cheio)
 
         if (uriDaFoto != null) {
+            // Carregamento assíncrono da imagem
             imageView.load(Uri.parse(uriDaFoto))
-            // Encontra a foto inicial quando a atividade é criada
             fotoAtual = viewModel.listaFotos.value?.find { it.uriString == uriDaFoto }
         } else {
             imageView.load(R.drawable.ic_launcher_background)
             Toast.makeText(this, "Erro ao carregar a imagem.", Toast.LENGTH_SHORT).show()
-            finish() // Fecha a atividade se não houver URI, pois não há o que mostrar
+            finish()
         }
 
-        // ✅ PASSO 1 (CORREÇÃO): Observar a lista de fotos para reagir a eliminações
+        // <summary>
+        // Monitoriza o LiveData global. Se a foto desaparecer da lista (ex: apagada),
+        // encerra a atividade para evitar erros de referência nula.
+        // </summary>
         viewModel.listaFotos.observe(this) { listaAtualizada ->
-            // Verifica se a foto que estamos a ver ainda existe na lista do ViewModel.
-            // Se 'find' devolver null, significa que a foto foi removida.
             val fotoAindaExiste = listaAtualizada.any { it.uriString == uriDaFoto }
-
             if (!fotoAindaExiste) {
-                // Se a foto foi removida (p.ex., por outra parte do código ou após a ação de apagar),
-                // fecha esta atividade.
                 Toast.makeText(this, "Foto eliminada.", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
     }
 
+    /**
+     * <summary> Infla o menu de opções específico para a gestão de fotografias. </summary>
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_fotos, menu)
         return true
     }
 
+    /**
+     * <summary> Trata os cliques nas opções do menu (Renomear, Apagar, Mover ou Voltar). </summary>
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Usa a fotoAtual que já foi definida, garantindo que não é nula.
         val foto = fotoAtual ?: run {
-            Toast.makeText(this, "Não foi possível identificar a foto para realizar a ação.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Não foi possível identificar a foto.", Toast.LENGTH_SHORT).show()
             return false
         }
 
@@ -101,28 +115,27 @@ class VerFotoActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * <summary>
+     * Apresenta um diálogo com um Spinner (dropdown) para transferir a foto para uma coleção diferente.
+     * Filtra a lista para não mostrar a coleção onde a foto já reside.
+     * </summary>
+     */
     private fun mostrarDialogoMoverFoto(fotoParaMover: FotoDados) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Mover para...")
 
-        // Infla o layout que contém o Spinner
         val view = layoutInflater.inflate(R.layout.dialog_mover_foto, null)
         val spinner = view.findViewById<Spinner>(R.id.spinnerColecoes)
 
-        // 1. Filtrar as coleções (Não mostrar a coleção onde a foto já está)
         val todasColecoes = viewModel.listaColecoes.value ?: emptyList()
-        val colecaoAtualDaFoto = fotoParaMover.data // A coleção atual está guardada no 'data' da foto
+        val colecaoAtualDaFoto = fotoParaMover.data
         val colecoesDestino = todasColecoes.filter { it.titulo != colecaoAtualDaFoto }
 
         val nomes = colecoesDestino.map { it.nomePersonalizado ?: it.titulo }
 
-        // 2. Configurar o Adaptador para o Spinner (O segredo do Dropdown)
-        // O layout 'simple_spinner_item' é o que aparece na caixa FECHADA
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nomes)
-
-        // O layout 'simple_spinner_dropdown_item' é o que aparece na lista ABERTA
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
         spinner.adapter = adapter
 
         builder.setView(view)
@@ -133,7 +146,6 @@ class VerFotoActivity : AppCompatActivity() {
                 val destino = colecoesDestino[posicao]
                 viewModel.moverFotoParaColecao(fotoParaMover, destino)
                 Toast.makeText(this, "Foto movida com sucesso!", Toast.LENGTH_SHORT).show()
-                // Como a foto mudou de coleção, fechamos o ecrã de visualização
                 finish()
             }
         }
@@ -142,6 +154,9 @@ class VerFotoActivity : AppCompatActivity() {
         builder.show()
     }
 
+    /**
+     * <summary> Abre uma caixa de diálogo para editar o título personalizado da fotografia. </summary>
+     */
     private fun mostrarDialogoRenomear(foto: FotoDados) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Renomear Foto")
@@ -154,7 +169,6 @@ class VerFotoActivity : AppCompatActivity() {
             val novoNome = input.text.toString()
             if (novoNome.isNotBlank()) {
                 viewModel.renomearFoto(foto, novoNome)
-                // Opcional: Atualizar o título da toolbar se estiver a ser usado
             }
             dialog.dismiss()
         }
@@ -162,14 +176,15 @@ class VerFotoActivity : AppCompatActivity() {
         builder.show()
     }
 
+    /**
+     * <summary> Exibe um aviso de confirmação antes de invocar a remoção permanente da foto. </summary>
+     */
     private fun mostrarDialogoConfirmacaoApagar(foto: FotoDados) {
         AlertDialog.Builder(this)
             .setTitle("Apagar Foto")
             .setMessage("Tem a certeza que quer apagar permanentemente esta foto?")
             .setPositiveButton("Apagar") { _, _ ->
                 viewModel.apagarFoto(foto)
-                // A observação do LiveData no onCreate tratará de fechar a atividade.
-                // A chamada finish() aqui é redundante, mas inofensiva.
             }
             .setNegativeButton("Cancelar", null)
             .show()

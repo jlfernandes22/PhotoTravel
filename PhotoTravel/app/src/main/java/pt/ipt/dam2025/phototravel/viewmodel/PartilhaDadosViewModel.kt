@@ -24,6 +24,12 @@ import pt.ipt.dam2025.phototravel.data.remote.RetrofitInstance
 import java.io.File
 import java.io.FileOutputStream
 
+/**
+ * <summary>
+ * ViewModel central da aplicação PhotoTravel.
+ * Gere o estado global das coleções e fotos, permitindo a partilha de dados entre fragmentos e activities.
+ * </summary>
+ */
 class PartilhaDadosViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _listaColecoes = MutableLiveData<List<ColecaoDados>>()
@@ -32,6 +38,11 @@ class PartilhaDadosViewModel(application: Application) : AndroidViewModel(applic
     private val _listaFotos = MutableLiveData<List<FotoDados>>()
     val listaFotos: LiveData<List<FotoDados>> get() = _listaFotos
 
+    /**
+     * <summary>
+     * Bloco de inicialização: Carrega os dados guardados no disco assim que o ViewModel é instanciado.
+     * </summary>
+     */
     init {
 
         viewModelScope.launch(Dispatchers.IO) {
