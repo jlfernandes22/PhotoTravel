@@ -29,12 +29,6 @@ class ColecoesFragmento : Fragment() {
     private val viewModel: PartilhaDadosViewModel by activityViewModels()
     private lateinit var adapter: ColecoesAdapter
 
-    override fun onResume() {
-        super.onResume()
-        // Tenta carregar o que já está no disco
-        viewModel.recarregarDados()
-
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_colecoes, container, false)
@@ -65,7 +59,7 @@ class ColecoesFragmento : Fragment() {
             }
         )
         recyclerView.adapter = adapter
-
+        viewModel.sincronizarDados(requireContext())
         viewModel.listaColecoes.observe(viewLifecycleOwner, Observer { listaDeColecoes ->
             if (listaDeColecoes != null) {
                 adapter.atualizarLista(listaDeColecoes.reversed())

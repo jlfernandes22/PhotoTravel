@@ -6,10 +6,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FotoDados(
-    val id: Int = 0,
+    val id: Long = 0L,
 
-    // Lê "base64" do servidor ou mantém uriString local
-    @SerializedName(value = "base64", alternate = ["uriString", "imageUrl"])
+    @SerializedName(value = "base64", alternate = ["uriString"])
     val uriString: String,
 
     @SerializedName("titulo")
@@ -21,5 +20,8 @@ data class FotoDados(
 
     val latitude: Double? = 0.0,
     val longitude: Double? = 0.0,
-    val collectionId: Int = 0
+    val collectionId: Int = 0,
+
+
+    var sincronizada: Boolean = false
 ) : Parcelable

@@ -1,6 +1,5 @@
 package pt.ipt.dam2025.phototravel.adaptadores
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import pt.ipt.dam2025.phototravel.R
 import pt.ipt.dam2025.phototravel.modelos.FotoDados
+import java.io.File
 
 class FotosAdapter(
     private var listaFotos: List<FotoDados>,
@@ -16,48 +16,48 @@ class FotosAdapter(
     private val onItemLongClick: (FotoDados) -> Unit
 ) : RecyclerView.Adapter<FotosAdapter.FotoViewHolder>() {
 
-    fun atualizarFotos(novasFotos: List<FotoDados>) {
-        this.listaFotos = novasFotos
-        notifyDataSetChanged()
+    class FotoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val imageView: ImageView = view.findViewById(R.id.imagem_item_foto)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FotoViewHolder {
+        // Certifica-te que o nome do layout (item_foto.xml) está correto
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_foto, parent, false)
         return FotoViewHolder(view)
     }
 
-    override fun getItemCount(): Int = listaFotos.size
-
     override fun onBindViewHolder(holder: FotoViewHolder, position: Int) {
         val foto = listaFotos[position]
 
-        // Deteta se é Base64 puro e adiciona o prefixo se necessário
-        val imagemParaCarregar = if (!foto.uriString.startsWith("http") && 
-            !foto.uriString.startsWith("content") && 
-            !foto.uriString.startsWith("data:") &&
-            !foto.uriString.startsWith("/")) {
-            "data:image/jpeg;base64,${foto.uriString}"
-        } else {
-            foto.uriString
-        }
+        // --- CORREÇÃO: Simplificação total ---
+        // O Coil é inteligente. Ele sabe ler:
+        // 1. "http://..." (Internet)
+        // 2. "file:///..." (Ficheiros locais do sync)
+        // 3. "content://..." (Fotos da câmara/galeria)
 
-        holder.imageView.load(imagemParaCarregar) {
+        holder.imageView.load(foto.uriString) {
             crossfade(true)
-            placeholder(android.R.drawable.ic_menu_gallery)
-            error(android.R.drawable.ic_menu_report_image)
+            placeholder(android.R.drawable.ic_menu_gallery) // Ícone enquanto carrega
+            error(android.R.drawable.ic_menu_report_image)   // Ícone se falhar
         }
 
+        // Clique normal para abrir
         holder.itemView.setOnClickListener {
             onItemClick(foto)
         }
 
+        // Clique longo para mover/apagar
         holder.itemView.setOnLongClickListener {
             onItemLongClick(foto)
             true
         }
     }
 
-    class FotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.imagem_item_foto)
+    override fun getItemCount(): Int = listaFotos.size
+
+    // Função auxiliar para atualizar a lista sem recriar o adapter
+    fun atualizarFotos(novasFotos: List<FotoDados>) {
+        this.listaFotos = novasFotos
+        notifyDataSetChanged()
     }
 }

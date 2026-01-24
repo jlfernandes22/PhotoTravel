@@ -52,11 +52,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-
-        // Tenta ir buscar novidades ao servidor
-        // Passamos o context para ele conseguir ler o SharedPreferences
-        viewModel.sincronizarDados(this)
-
     }
 
 

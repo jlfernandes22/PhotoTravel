@@ -9,11 +9,13 @@ import pt.ipt.dam2025.phototravel.modelos.ColecaoDados
 import pt.ipt.dam2025.phototravel.modelos.FotoDados
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -57,4 +59,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Query("collectionId") collectionId: Int?
     ): Response<List<FotoDados>>
+
+
+    @DELETE("photos/{id}")
+    suspend fun deletePhoto(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long
+    ): Response<Unit> // Unit porque o servidor devolve apenas uma mensagem JSON, não dados
 }
