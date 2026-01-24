@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +13,7 @@ import pt.ipt.dam2025.phototravel.data.model.LoginRequest
 import pt.ipt.dam2025.phototravel.data.remote.RetrofitInstance
 import pt.ipt.dam2025.phototravel.MainActivity
 import pt.ipt.dam2025.phototravel.R
+import androidx.core.content.edit
 
 /**
  * <summary>
@@ -53,12 +55,17 @@ class LoginActivity : AppCompatActivity() {
                     )
 
                     if (response.isSuccessful) {
-                        Toast.makeText(this@LoginActivity, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
+                        val loginResponse = response.body()
+                        if (loginResponse != null) {
+                            // 1. Guardar o token
+                            val sharedPrefs = getSharedPreferences("PhotoTravelPrefs", MODE_PRIVATE)
+                            sharedPrefs.edit().putString("USER_TOKEN", loginResponse.token).apply()
 
-                        // Navega para a aplicação principal e encerra o ecrã de login
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                            Toast.makeText(this@LoginActivity, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
                     } else {
                         Toast.makeText(this@LoginActivity, "Erro no login: Credenciais inválidas", Toast.LENGTH_SHORT).show()
                     }
@@ -78,5 +85,13 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, RegistarActivity::class.java)
             startActivity(intent)
         }
+
+        val btnSobre = findViewById<ImageButton>(R.id.btnSobreLogin)
+        btnSobre.setOnClickListener {
+            val intent = Intent(this, SobreActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
+
+

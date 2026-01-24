@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                 tabLayout.getTabAt(position)?.select()
             }
         })
+
     }
 
     /**

@@ -54,6 +54,12 @@
             android:exported="false" />
 
         <activity android:name=".DetalheColecaoActivity" />
+
+        <activity
+            android:name=".ui.SobreActivity"
+            android:label="Sobre a Aplicação"
+            android:parentActivityName=".ui.LoginActivity" />
+
     </application>
 
 </manifest>
